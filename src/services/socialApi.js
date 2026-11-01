@@ -7,6 +7,12 @@ function pageQuery(page = 1) {
 }
 
 export const socialApi = {
+  getMyProfile() {
+    return call("/me/profile");
+  },
+  getPlayerStats() {
+    return call("/players/stats");
+  },
   searchPlayers(query, page = 1) {
     const params = new URLSearchParams({
       q: query,

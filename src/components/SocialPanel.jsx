@@ -1,16 +1,18 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Bell,
   Check,
   ChevronLeft,
   ChevronRight,
   Circle,
+  Copy,
   Crown,
   Eye,
   Search,
   Shield,
   ShieldOff,
   Swords,
+  Trophy,
   UserMinus,
   UserPlus,
   UsersRound,
@@ -27,13 +29,72 @@ const tabs = [
   { id: "blocked", label: "Blocked", Icon: Shield },
 ];
 
-function Status({ online }) {
+const PUBLIC_PLAYER_ID_PATTERN = /^KS-[A-Z0-9]{8}$/i;
+
+function formatLastSeen(value) {
+  if (!value) return "Offline";
+  const timestamp = Date.parse(value);
+  if (!Number.isFinite(timestamp)) return "Last seen";
+  const minutes = Math.max(0, Math.floor((Date.now() - timestamp) / 60_000));
+  if (minutes < 1) return "Last seen just now";
+  if (minutes < 60) return `Last seen ${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `Last seen ${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `Last seen ${days}d ago`;
+}
+
+function Status({ online, available = true, lastSeenAt }) {
+  const label = online
+    ? "Online"
+    : available
+      ? formatLastSeen(lastSeenAt)
+      : "Unavailable";
   return (
-    <span className={`socialStatus${online ? " online" : ""}`}>
+    <span className={`socialStatus${online ? " online" : ""}${available ? "" : " unavailable"}`}>
       <Circle size={7} fill="currentColor" aria-hidden="true" />
-      {online ? "Online" : "Offline"}
+      {label}
     </span>
   );
+}
+
+function CopyablePlayerId({ id, onCopy }) {
+  if (!id) return null;
+
+  return (
+    <div className="socialPlayerId">
+      <span>Player ID: <strong>{id}</strong></span>
+      <button className="socialCopyButton" type="button" onClick={() => void onCopy(id)}>
+        <Copy size={12} aria-hidden="true" />
+        Copy
+      </button>
+    </div>
+  );
+}
+
+function getPublicPlayerId(player) {
+  const id = player?.publicPlayerId ?? player?.id;
+  return typeof id === "string" && PUBLIC_PLAYER_ID_PATTERN.test(id) ? id : null;
+}
+
+function playerReference(player) {
+  return getPublicPlayerId(player) || player.id;
+}
+
+function relationshipLabel(status) {
+  if (status === "pending") return "Request sent";
+  if (status === "friends") return "Friends";
+  if (status === "blocked") return "Blocked";
+  return "Add Friend";
+}
+
+function getPresenceStatus(player, presence) {
+  const publicPlayerId = getPublicPlayerId(player);
+  return {
+    online: Boolean(publicPlayerId && presence?.onlinePlayerIds?.has(publicPlayerId)),
+    available: presence?.available === true,
+    lastSeenAt: player.lastSeenAt,
+  };
 }
 
 function PlayerCard({
@@ -45,9 +106,13 @@ function PlayerCard({
   secondaryAction,
   secondaryLabel,
   onView,
+  onCopy,
+  showPublicId = false,
+  showStatus = true,
   showProfile = true,
+  presenceStatus,
 }) {
-  const name = player.displayName || player.username;
+  const name = player.username;
   return (
     <article className="socialPlayerCard">
       <button className="socialPlayerIdentity" type="button" onClick={onView} disabled={!showProfile}>
@@ -59,10 +124,32 @@ function PlayerCard({
           <small>@{player.username}</small>
         </span>
       </button>
+      {showPublicId && (
+        <div className="socialResultPlayerId">
+          {getPublicPlayerId(player) && (
+            <>
+              <span>Player ID: <strong>{getPublicPlayerId(player)}</strong></span>
+              <button className="socialCopyButton" type="button" onClick={() => void onCopy(getPublicPlayerId(player))}>
+                <Copy size={12} aria-hidden="true" />
+                Copy
+              </button>
+            </>
+          )}
+        </div>
+      )}
       <div className="socialPlayerMeta">
         <span><Swords size={13} aria-hidden="true" />{Number(player.power || 0).toLocaleString()} power</span>
         <span><Crown size={13} aria-hidden="true" />{player.realm}</span>
-        <Status online={player.online === true} />
+        <span><Trophy size={13} aria-hidden="true" />{Number(player.victories || 0).toLocaleString()} victories</span>
+        {showStatus && (
+          <Status
+            {...(presenceStatus || {
+              online: false,
+              available: false,
+              lastSeenAt: player.lastSeenAt,
+            })}
+          />
+        )}
       </div>
       <div className="socialCardActions">
         {showProfile && (
@@ -75,12 +162,12 @@ function PlayerCard({
             {secondaryLabel}
           </button>
         )}
-        {action && (
+        {(action || actionLabel) && (
           <button
-            className="primaryButton socialActionButton"
+            className={`primaryButton socialActionButton${actionDisabled ? " secondary" : ""}`}
             type="button"
-            onClick={action}
-            disabled={actionDisabled}
+            onClick={action || undefined}
+            disabled={actionDisabled || !action}
           >
             {ActionIcon && <ActionIcon size={14} aria-hidden="true" />}
             {actionLabel}
@@ -130,13 +217,15 @@ function PlayerProfile({
   isBlocked,
   isPending,
   busy,
+  presenceStatus,
   onAdd,
   onRemove,
   onBlock,
   onUnblock,
+  onCopy,
 }) {
   if (!player) return null;
-  const name = player.displayName || player.username;
+  const name = player.username;
 
   return (
     <aside className="socialProfilePanel" aria-label="Player profile">
@@ -149,7 +238,14 @@ function PlayerProfile({
       <div className="socialProfileCrest">{name.slice(0, 1).toUpperCase()}</div>
       <h2>{name}</h2>
       <span className="socialHandle">@{player.username}</span>
-      <Status online={player.online === true} />
+      <CopyablePlayerId id={getPublicPlayerId(player)} onCopy={onCopy} />
+      <Status
+        {...(presenceStatus || {
+          online: false,
+          available: false,
+          lastSeenAt: player.lastSeenAt,
+        })}
+      />
       <p className="socialProfileBio">{player.bio || "This commander has not added a profile description."}</p>
       <div className="socialProfileRealm">
         <Crown size={15} aria-hidden="true" />
@@ -160,12 +256,15 @@ function PlayerProfile({
         <div><small>VICTORIES</small><strong>{Number(player.victories || 0).toLocaleString()}</strong></div>
       </div>
       <div className="socialProfileActions">
-        {!isFriend && !isBlocked && (
-          <button className="primaryButton" type="button" onClick={onAdd} disabled={busy || isPending}>
-            {isPending ? <Check size={15} /> : <UserPlus size={15} />}
-            {isPending ? "Requested" : "Add Friend"}
-          </button>
-        )}
+        <button
+          className={`primaryButton socialRelationshipButton${isFriend || isBlocked || isPending ? " secondary" : ""}`}
+          type="button"
+          onClick={isFriend || isBlocked || isPending ? undefined : onAdd}
+          disabled={busy || isFriend || isBlocked || isPending}
+        >
+          {isFriend ? <Check size={15} /> : isBlocked ? <Shield size={15} /> : isPending ? <Check size={15} /> : <UserPlus size={15} />}
+          {isFriend ? "Friends" : isBlocked ? "Blocked" : isPending ? "Request sent" : "Add Friend"}
+        </button>
         {isFriend && (
           <button className="socialTextButton danger" type="button" onClick={onRemove} disabled={busy}>
             <UserMinus size={15} /> Remove friend
@@ -185,24 +284,41 @@ function PlayerProfile({
   );
 }
 
-export default function SocialPanel() {
+export default function SocialPanel({ presence }) {
   const social = useSocial();
   const [tab, setTab] = useState("discover");
   const [query, setQuery] = useState("");
+  const [copyNotice, setCopyNotice] = useState(null);
+  const copyTimer = useRef(null);
 
-  const friendIds = useMemo(
-    () => new Set(social.lists.friends.map((player) => player.id)),
+  useEffect(() => () => window.clearTimeout(copyTimer.current), []);
+
+  async function copyPlayerId(playerId) {
+    try {
+      await navigator.clipboard.writeText(playerId);
+      setCopyNotice({ type: "success", text: "Player ID copied" });
+      window.clearTimeout(copyTimer.current);
+      copyTimer.current = window.setTimeout(() => setCopyNotice(null), 3000);
+    } catch {
+      setCopyNotice({ type: "error", text: "Could not copy Player ID. Please copy it manually." });
+      window.clearTimeout(copyTimer.current);
+      copyTimer.current = window.setTimeout(() => setCopyNotice(null), 5000);
+    }
+  }
+
+  const friendNames = useMemo(
+    () => new Set(social.lists.friends.map((player) => player.username.toLowerCase())),
     [social.lists.friends],
   );
-  const blockedIds = useMemo(
-    () => new Set(social.lists.blocked.map((player) => player.id)),
+  const blockedNames = useMemo(
+    () => new Set(social.lists.blocked.map((player) => player.username.toLowerCase())),
     [social.lists.blocked],
   );
-  const pendingIds = useMemo(
+  const pendingNames = useMemo(
     () => new Set(
       social.lists.requests
         .filter((request) => request.direction === "outgoing")
-        .map((request) => request.playerId),
+        .map((request) => request.username.toLowerCase()),
     ),
     [social.lists.requests],
   );
@@ -250,11 +366,11 @@ export default function SocialPanel() {
           >
             <Search size={17} aria-hidden="true" />
             <input
-              aria-label="Search players by username"
+              aria-label="Search players by username or public ID"
               maxLength={20}
               minLength={2}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search by username..."
+              placeholder="Search by username or Player ID"
               value={query}
             />
             <button type="submit" className="primaryButton" disabled={social.searching || query.trim().length < 2}>
@@ -262,23 +378,25 @@ export default function SocialPanel() {
             </button>
           </form>
           <div className="socialList">
-            {!hasSearch && <EmptyState>Search for a commander by username to discover their profile.</EmptyState>}
+            {!hasSearch && <EmptyState>Search by username or Player ID to discover a commander.</EmptyState>}
+            {hasSearch && social.searching && <EmptyState>Searching players...</EmptyState>}
             {hasSearch && !social.searchResults.length && !social.searching && (
               <EmptyState>No players match this search.</EmptyState>
             )}
             {social.searchResults.map((player) => {
-              const isFriend = friendIds.has(player.id);
-              const isBlocked = blockedIds.has(player.id);
-              const pending = pendingIds.has(player.id);
+              const relationship = player.friendshipStatus;
               return (
                 <PlayerCard
-                  key={player.id}
+                  key={getPublicPlayerId(player) || player.username}
                   player={player}
-                  onView={() => void social.viewPlayer(player.id)}
-                  action={!isFriend && !isBlocked ? () => void social.sendRequest(player.id) : null}
-                  actionLabel={pending ? "Requested" : "Add Friend"}
-                  actionIcon={pending ? Check : UserPlus}
-                  actionDisabled={social.busy || pending}
+                  onView={() => void social.viewPlayer(playerReference(player))}
+                  onCopy={copyPlayerId}
+                  showPublicId
+                  showStatus={false}
+                  action={relationship === "none" ? () => void social.sendRequest(playerReference(player)) : null}
+                  actionLabel={relationshipLabel(relationship)}
+                  actionIcon={relationship === "none" ? UserPlus : relationship === "blocked" ? Shield : Check}
+                  actionDisabled={social.busy || relationship !== "none"}
                 />
               );
             })}
@@ -289,14 +407,22 @@ export default function SocialPanel() {
           <PlayerProfile
             player={social.selectedPlayer}
             onClose={social.closeProfile}
-            isFriend={friendIds.has(social.selectedPlayer.id)}
-            isBlocked={blockedIds.has(social.selectedPlayer.id)}
-            isPending={pendingIds.has(social.selectedPlayer.id)}
+            isFriend={social.selectedPlayer.friendshipStatus === "friends" || friendNames.has(social.selectedPlayer.username.toLowerCase())}
+            isBlocked={social.selectedPlayer.friendshipStatus === "blocked" || blockedNames.has(social.selectedPlayer.username.toLowerCase())}
+            isPending={social.selectedPlayer.friendshipStatus === "pending" || pendingNames.has(social.selectedPlayer.username.toLowerCase())}
             busy={social.busy}
-            {...playerActions(social.selectedPlayer.id)}
+            onCopy={copyPlayerId}
+            presenceStatus={getPresenceStatus(social.selectedPlayer, presence)}
+            {...playerActions(playerReference(social.selectedPlayer))}
           />
         ) : (
-          <SocialAside social={social} incomingCount={incomingCount} onChangeTab={setTab} />
+          <SocialAside
+            social={social}
+            incomingCount={incomingCount}
+            onChangeTab={setTab}
+            onCopy={copyPlayerId}
+            presence={presence}
+          />
         )}
       </div>
     );
@@ -316,6 +442,7 @@ export default function SocialPanel() {
               key={player.id}
               player={player}
               onView={() => void social.viewPlayer(player.id)}
+              presenceStatus={getPresenceStatus(player, presence)}
               secondaryAction={() => void social.removeFriend(player.id)}
               secondaryLabel={<><UserMinus size={14} /> Remove</>}
             />
@@ -336,6 +463,7 @@ export default function SocialPanel() {
           eyebrow="INCOMING"
           items={incoming}
           onView={social.viewPlayer}
+          presence={presence}
           renderActions={(request) => (
             <>
               <button className="primaryButton socialActionButton" type="button" disabled={social.busy} onClick={() => void social.acceptRequest(request.id)}>
@@ -352,6 +480,7 @@ export default function SocialPanel() {
           eyebrow="OUTGOING"
           items={outgoing}
           onView={social.viewPlayer}
+          presence={presence}
           renderActions={() => <span className="socialPendingLabel">Awaiting response</span>}
         />
         {renderPagination("requests", social.pages.requests, social.lists.requests)}
@@ -407,6 +536,7 @@ export default function SocialPanel() {
               player={player}
               showProfile={false}
               onView={() => void social.viewPlayer(player.id)}
+              presenceStatus={getPresenceStatus(player, presence)}
               action={() => void social.unblockPlayer(player.id)}
               actionLabel="Unblock"
               actionIcon={ShieldOff}
@@ -438,6 +568,37 @@ export default function SocialPanel() {
           <span className="socialLiveMark" /> {social.loading ? "Syncing..." : "Live realm"}
         </button>
       </div>
+
+      <div className="socialIdentityBanner">
+        <div>
+          <span className="eyebrow">MY PROFILE</span>
+          <strong>{social.myProfile?.username || (social.loading ? "Loading..." : "Unavailable")}</strong>
+          <CopyablePlayerId id={getPublicPlayerId(social.myProfile)} onCopy={copyPlayerId} />
+        </div>
+        <div>
+          <span className="eyebrow">REGISTERED PLAYERS</span>
+          <strong>{social.registeredPlayers?.toLocaleString() ?? (social.loading ? "Loading..." : "Unavailable")}</strong>
+        </div>
+        <div>
+          <span className="eyebrow">ONLINE NOW</span>
+          <strong>
+            {presence?.available
+              ? presence.onlineCount.toLocaleString()
+              : presence?.connection === "connecting"
+                ? "Connecting..."
+                : "Online unavailable"}
+          </strong>
+        </div>
+      </div>
+      {copyNotice && (
+        <div
+          className={`socialCopyNotice${copyNotice.type === "error" ? " error" : ""}`}
+          role={copyNotice.type === "error" ? "alert" : "status"}
+          aria-live="polite"
+        >
+          {copyNotice.text}
+        </div>
+      )}
 
       <div className="socialTabs" role="tablist" aria-label="Social sections">
         {tabs.map(({ id, label, Icon }) => (
@@ -481,11 +642,13 @@ export default function SocialPanel() {
             <PlayerProfile
               player={social.selectedPlayer}
               onClose={social.closeProfile}
-              isFriend={friendIds.has(social.selectedPlayer.id)}
-              isBlocked={blockedIds.has(social.selectedPlayer.id)}
-              isPending={pendingIds.has(social.selectedPlayer.id)}
+              isFriend={social.selectedPlayer.friendshipStatus === "friends" || friendNames.has(social.selectedPlayer.username.toLowerCase())}
+              isBlocked={social.selectedPlayer.friendshipStatus === "blocked" || blockedNames.has(social.selectedPlayer.username.toLowerCase())}
+              isPending={social.selectedPlayer.friendshipStatus === "pending" || pendingNames.has(social.selectedPlayer.username.toLowerCase())}
               busy={social.busy}
-              {...playerActions(social.selectedPlayer.id)}
+              onCopy={copyPlayerId}
+              presenceStatus={getPresenceStatus(social.selectedPlayer, presence)}
+              {...playerActions(playerReference(social.selectedPlayer))}
             />
           </div>
         </div>
@@ -494,7 +657,7 @@ export default function SocialPanel() {
   );
 }
 
-function RequestList({ title, eyebrow, items, onView, renderActions }) {
+function RequestList({ title, eyebrow, items, onView, presence, renderActions }) {
   return (
     <section className="socialSectionCard">
       <div className="socialSectionHeading">
@@ -514,7 +677,7 @@ function RequestList({ title, eyebrow, items, onView, renderActions }) {
                 <small>@{request.username} · {request.realm}</small>
               </span>
             </button>
-            <Status online={request.online === true} />
+            <Status {...getPresenceStatus(request, presence)} />
             <div className="socialCardActions">{renderActions(request)}</div>
           </article>
         ))}
@@ -523,7 +686,7 @@ function RequestList({ title, eyebrow, items, onView, renderActions }) {
   );
 }
 
-function SocialAside({ social, incomingCount, onChangeTab }) {
+function SocialAside({ social, incomingCount, onChangeTab, onCopy, presence }) {
   const notices = social.lists.notifications.slice(0, 3);
   return (
     <aside className="socialAside">
@@ -558,16 +721,18 @@ function SocialAside({ social, incomingCount, onChangeTab }) {
         <PlayerProfile
           player={social.selectedPlayer}
           onClose={social.closeProfile}
-          isFriend={social.lists.friends.some((friend) => friend.id === social.selectedPlayer.id)}
-          isBlocked={social.lists.blocked.some((player) => player.id === social.selectedPlayer.id)}
-          isPending={social.lists.requests.some(
-            (request) => request.direction === "outgoing" && request.playerId === social.selectedPlayer.id,
+          isFriend={social.selectedPlayer.friendshipStatus === "friends" || social.lists.friends.some((friend) => friend.username === social.selectedPlayer.username)}
+          isBlocked={social.selectedPlayer.friendshipStatus === "blocked" || social.lists.blocked.some((player) => player.username === social.selectedPlayer.username)}
+          isPending={social.selectedPlayer.friendshipStatus === "pending" || social.lists.requests.some(
+            (request) => request.direction === "outgoing" && request.username === social.selectedPlayer.username,
           )}
           busy={social.busy}
-          onAdd={() => void social.sendRequest(social.selectedPlayer.id)}
-          onRemove={() => void social.removeFriend(social.selectedPlayer.id)}
-          onBlock={() => void social.blockPlayer(social.selectedPlayer.id)}
-          onUnblock={() => void social.unblockPlayer(social.selectedPlayer.id)}
+          presenceStatus={getPresenceStatus(social.selectedPlayer, presence)}
+          onAdd={() => void social.sendRequest(playerReference(social.selectedPlayer))}
+          onRemove={() => void social.removeFriend(playerReference(social.selectedPlayer))}
+          onBlock={() => void social.blockPlayer(playerReference(social.selectedPlayer))}
+          onUnblock={() => void social.unblockPlayer(playerReference(social.selectedPlayer))}
+          onCopy={onCopy}
         />
       )}
     </aside>

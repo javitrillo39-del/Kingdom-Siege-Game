@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Login from "./components/Login.jsx";
 import GamePage from "./pages/GamePage.jsx";
 import { call } from "./services/api.js";
+import { endPresenceSession } from "./services/presenceApi.js";
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -15,12 +16,18 @@ export default function App() {
     let active = true;
 
     call("/game")
-      .then((data) => {
-        if (!data?.game) {
-          throw new Error("The saved game session is unavailable. Please sign in again.");
+      .then((response) => {
+        if (
+          !response?.game ||
+          !Number.isSafeInteger(response.user?.id) ||
+          response.user.id <= 0 ||
+          typeof response.user.username !== "string" ||
+          !response.user.username.trim()
+        ) {
+          throw new Error("The saved session is incomplete. Please sign in again.");
         }
         if (active) {
-          setSession({ game: data.game, user: { username: "Commander" } });
+          setSession({ user: response.user, game: response.game });
         }
       })
       .catch((error) => {
@@ -53,14 +60,24 @@ export default function App() {
     return <Login onLogin={setSession} initialError={loadError} />;
   }
 
+  async function logout() {
+    let logoutError = "";
+    try {
+      await endPresenceSession();
+    } catch (error) {
+      logoutError = error.message || "Could not update the last-seen status.";
+    } finally {
+      localStorage.removeItem("ks_token");
+      setLoadError(logoutError);
+      setSession(null);
+    }
+  }
+
   return (
     <GamePage
       initial={session.game}
       user={session.user}
-      onLogout={() => {
-        localStorage.removeItem("ks_token");
-        setSession(null);
-      }}
+      onLogout={logout}
     />
   );
 }

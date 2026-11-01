@@ -27,6 +27,93 @@
   line-height: 1.5;
 }
 
+.socialIdentityBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 15px;
+  border: 1px solid rgb(81 214 232 / 16%);
+  border-radius: 11px;
+  background: linear-gradient(110deg, rgb(81 214 232 / 8%), rgb(10 19 29 / 75%));
+}
+
+.socialIdentityBanner > div {
+  display: grid;
+  gap: 5px;
+}
+
+.socialIdentityBanner > div:last-child {
+  text-align: right;
+}
+
+.socialIdentityBanner strong {
+  color: #b7eef2;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.socialPlayerId {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  color: #92aabb;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.socialPlayerId > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.socialPlayerId strong {
+  color: #b7eef2;
+  font-size: inherit;
+  letter-spacing: 0.04em;
+}
+
+.socialCopyButton {
+  display: inline-flex;
+  min-height: 27px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 1px solid rgb(81 214 232 / 18%);
+  border-radius: 7px;
+  background: rgb(81 214 232 / 6%);
+  color: #a7e4ea;
+  font-size: 9px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.socialCopyButton:hover {
+  border-color: rgb(81 214 232 / 42%);
+  background: rgb(81 214 232 / 12%);
+  color: #e2fbfc;
+}
+
+.socialCopyNotice {
+  padding: 9px 12px;
+  border: 1px solid rgb(107 212 168 / 22%);
+  border-radius: 8px;
+  background: rgb(107 212 168 / 7%);
+  color: #8de0b6;
+  font-size: 10px;
+}
+
+.socialCopyNotice.error {
+  border-color: rgb(255 132 151 / 25%);
+  background: rgb(255 132 151 / 8%);
+  color: #ff9aa9;
+}
+
 .socialRefreshButton,
 .socialIconButton,
 .socialPagerButton {
@@ -328,8 +415,39 @@
   white-space: nowrap;
 }
 
+.socialResultPlayerId {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  grid-column: 1 / -1;
+  padding-top: 7px;
+  border-top: 1px solid rgb(174 201 224 / 8%);
+  color: #8eb6bf;
+  font-size: 9px;
+}
+
+.socialResultPlayerId > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.socialResultPlayerId strong {
+  color: #b7eef2;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.socialResultPlayerId + .socialPlayerMeta {
+  grid-column: 1 / -1;
+  justify-content: flex-start;
+}
+
 .socialPlayerMeta {
   display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
@@ -361,6 +479,10 @@
 
 .socialStatus.online {
   color: #73d9a8;
+}
+
+.socialStatus.unavailable {
+  color: #b98570;
 }
 
 .socialCardActions {
@@ -417,6 +539,25 @@
   border-color: rgb(81 214 232 / 20%);
   background: rgb(81 214 232 / 7%);
   color: #a3eaf0;
+}
+
+.socialActionButton:disabled {
+  cursor: default;
+  opacity: 0.88;
+}
+
+.socialActionButton:disabled:not(.secondary) {
+  opacity: 0.58;
+}
+
+.socialRelationshipButton.secondary {
+  border-color: rgb(81 214 232 / 20%);
+  background: rgb(81 214 232 / 7%);
+  color: #a3eaf0;
+}
+
+.socialIdentityBanner .socialPlayerId {
+  color: #92aabb;
 }
 
 .socialPager {

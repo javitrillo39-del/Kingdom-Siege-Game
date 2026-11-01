@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { buildings, sectionTitles } from "../data/gameConfig.js";
 import { call } from "../services/api.js";
 import useProductionRates from "../hooks/useProductionRates.js";
+import usePresence from "../hooks/usePresence.js";
 import ArmyPanel from "../components/ArmyPanel.jsx";
 import CityPanel from "../components/CityPanel.jsx";
 import CommanderPanel from "../components/CommanderPanel.jsx";
@@ -9,6 +10,13 @@ import GameHeader from "../components/GameHeader.jsx";
 import GameNavigation from "../components/GameNavigation.jsx";
 import MapPanel from "../components/MapPanel.jsx";
 import SocialPanel from "../components/SocialPanel.jsx";
+
+const presenceSections = {
+  city: "City",
+  army: "Army",
+  map: "Map",
+  social: "Social",
+};
 
 export default function GamePage({ initial, user, onLogout }) {
   const [game, setGame] = useState(initial);
@@ -19,6 +27,7 @@ export default function GamePage({ initial, user, onLogout }) {
   const busyRef = useRef(false);
   const toastTimerRef = useRef(null);
   const { rates, recordCollection, resetBaseline } = useProductionRates(initial);
+  const presence = usePresence({ userId: user.id, activeSection: presenceSections[panel] });
 
   const power = useMemo(
     () => game.troops * 5 + game.castle * 20 + game.barracks * 8,
@@ -143,7 +152,7 @@ export default function GamePage({ initial, user, onLogout }) {
               onAttack={(enemyId) => action("/game/attack", { enemyId })}
             />
           )}
-          {panel === "social" && <SocialPanel />}
+          {panel === "social" && <SocialPanel presence={presence} />}
         </section>
         <CommanderPanel
           user={user}

@@ -41,6 +41,8 @@ export default function useSocial() {
   const [searchPage, setSearchPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [myProfile, setMyProfile] = useState(null);
+  const [registeredPlayers, setRegisteredPlayers] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -56,9 +58,13 @@ export default function useSocial() {
   const reload = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      await Promise.all(
-        Object.keys(listLoaders).map((key) => loadList(key, pages[key])),
-      );
+      const [profile, stats] = await Promise.all([
+        socialApi.getMyProfile(),
+        socialApi.getPlayerStats(),
+        ...Object.keys(listLoaders).map((key) => loadList(key, pages[key])),
+      ]);
+      setMyProfile(profile);
+      setRegisteredPlayers(stats.registeredPlayers);
       setError("");
     } catch (requestError) {
       setError(requestError.message || "Could not load social data.");
@@ -83,6 +89,7 @@ export default function useSocial() {
       return;
     }
 
+    setSearchResults([]);
     setSearching(true);
     setError("");
     try {
@@ -117,7 +124,7 @@ export default function useSocial() {
       if (closeProfile) {
         setSelectedPlayer(null);
       } else if (selectedPlayer) {
-        const data = await socialApi.getPlayer(selectedPlayer.id);
+        const data = await socialApi.getPlayer(selectedPlayer.publicPlayerId || selectedPlayer.id);
         setSelectedPlayer(data.player);
       }
       return true;
@@ -154,6 +161,8 @@ export default function useSocial() {
     searchPage,
     searchQuery,
     selectedPlayer,
+    myProfile,
+    registeredPlayers,
     loading,
     searching,
     busy,
