@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import {
+  hasCompatiblePresenceClaims,
+  inspectSupabaseConfig,
+} from "../src/services/presenceDiagnostics.js";
 import { uniquePresencePlayers } from "../src/services/presenceState.js";
 
 function player(publicPlayerId, username, activeSection = "City", presence_ref = "ref") {
@@ -49,4 +53,37 @@ test("accepts only the public presence fields and known sections", () => {
     Object.keys(online[0]).sort(),
     ["activeSection", "publicPlayerId", "realm", "username"],
   );
+});
+
+test("reports missing or malformed Supabase frontend configuration without exposing values", () => {
+  assert.deepEqual(inspectSupabaseConfig("", ""), [
+    "missing_supabase_url",
+    "missing_publishable_key",
+  ]);
+  assert.deepEqual(
+    inspectSupabaseConfig("https://project.supabase.co", "sb_publishable_short"),
+    ["invalid_publishable_key"],
+  );
+  assert.deepEqual(
+    inspectSupabaseConfig("https://project.supabase.co", `sb_publishable_${"a".repeat(32)}`),
+    [],
+  );
+});
+
+test("checks presence JWT claims without returning or logging token contents", () => {
+  const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
+  const token = [
+    encode({ alg: "HS256", typ: "JWT" }),
+    encode({
+      aud: "authenticated",
+      role: "authenticated",
+      sub: "KS-AAAAAAAA",
+      exp: Math.floor(Date.now() / 1000) + 60,
+    }),
+    Buffer.alloc(32).toString("base64url"),
+  ].join(".");
+
+  assert.equal(hasCompatiblePresenceClaims(token, "KS-AAAAAAAA"), true);
+  assert.equal(hasCompatiblePresenceClaims(token, "KS-BBBBBBBB"), false);
+  assert.equal(hasCompatiblePresenceClaims("not-a-token", "KS-AAAAAAAA"), false);
 });
