@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ArrowUpRight,
   CircleCheck,
@@ -9,22 +10,21 @@ import {
   Wind,
 } from "lucide-react";
 import { buildings } from "../data/gameConfig.js";
+import { formatNumber } from "../i18n/index.js";
 
 const resourceRates = [
-  { key: "food", label: "Food", Icon: Wheat, color: "food" },
-  { key: "wood", label: "Wood", Icon: Leaf, color: "wood" },
-  { key: "gold", label: "Gold", Icon: Coins, color: "gold" },
+  { key: "food", label: "common.food", Icon: Wheat, color: "food" },
+  { key: "wood", label: "common.wood", Icon: Leaf, color: "wood" },
+  { key: "gold", label: "common.gold", Icon: Coins, color: "gold" },
 ];
 
-function formatRate(rate) {
-  return rate === null ? "—" : rate.toFixed(1);
-}
-
-function formatResource(value) {
-  return new Intl.NumberFormat("en-US").format(value);
-}
-
 export default function CityPanel({ game, busy, rates, power, onUpgrade }) {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage || i18n.language;
+  const formatRate = (rate) => rate === null
+    ? "—"
+    : formatNumber(rate, locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const formatResource = (value) => formatNumber(value, locale);
   const [selectedId, setSelectedId] = useState("farm");
   const [upgradedId, setUpgradedId] = useState(null);
   const previousLevels = useRef(game);
@@ -58,12 +58,12 @@ export default function CityPanel({ game, busy, rates, power, onUpgrade }) {
 
   return (
     <div className="cityView">
-      <div className="cityEconomy" aria-label="Observed realm production">
+      <div className="cityEconomy" aria-label={t("city.observedProduction")}>
         <div className="economyHeading">
           <Wind size={15} aria-hidden="true" />
           <span>
-            <b>Realm output</b>
-            <small>Measured from live resource collection</small>
+            <b>{t("city.realmOutput")}</b>
+            <small>{t("city.measuredProduction")}</small>
           </span>
         </div>
         {resourceRates.map(({ key, label, Icon, color }) => (
@@ -71,23 +71,23 @@ export default function CityPanel({ game, busy, rates, power, onUpgrade }) {
             <Icon size={16} aria-hidden="true" />
             <span className="economyRateValue">
               <b>+{formatRate(rates[key])}</b>
-              <small>{label}/sec</small>
+              <small>{t("city.perSecond", { resource: t(label) })}</small>
             </span>
           </div>
         ))}
       </div>
 
       <div className="cityScene">
-        <section className="cityMap" aria-label="Select a city building">
+        <section className="cityMap" aria-label={t("city.cityBuilding")}>
           <div className="cityMapHeader">
             <span className="mapSeal">KS</span>
             <span>
-              <span className="eyebrow">THE INNER REALM</span>
+              <span className="eyebrow">{t("city.innerRealm")}</span>
               <b>Kingdom of Astrava</b>
             </span>
             <span className="cityPopulation">
               <span className="populationDot" />
-              Realm active
+              {t("city.realmActive")}
             </span>
           </div>
 
@@ -127,7 +127,7 @@ export default function CityPanel({ game, busy, rates, power, onUpgrade }) {
                   style={{ "--plot-order": index }}
                   type="button"
                 >
-                  <span className="plotLevel">LVL {game[id]}</span>
+                  <span className="plotLevel">{t("city.levelShort", { level: formatNumber(game[id], locale) })}</span>
                   <span className="plotStructure">
                     <span className="plotRoof" />
                     <span className="plotBuilding">
@@ -135,15 +135,15 @@ export default function CityPanel({ game, busy, rates, power, onUpgrade }) {
                     </span>
                     <span className="plotDoor" />
                   </span>
-                  <span className="plotName">{building.name}</span>
+                  <span className="plotName">{t(building.name)}</span>
                   <span className="plotStatus">
                     {affordable ? (
                       <>
                         <span className="readyDot" />
-                        Ready to improve
+                        {t("city.readyToImprove")}
                       </>
                     ) : (
-                      "Gather resources"
+                      t("city.gatherResources")
                     )}
                   </span>
                 </button>
@@ -151,85 +151,89 @@ export default function CityPanel({ game, busy, rates, power, onUpgrade }) {
             })}
           </div>
           <div className="cityMapFooter">
-            <span>Choose a building to inspect its next improvement</span>
-            <span className="mapCoordinates">ASTRAVA · 07</span>
+            <span>{t("city.chooseBuilding")}</span>
+            <span className="mapCoordinates">{t("city.coordinates", { realm: "07" })}</span>
           </div>
         </section>
 
         <aside
           className={`buildingInspector${canUpgrade ? " inspectorReady" : ""}`}
           aria-live="polite"
-          aria-label={`${selected.name} details`}
+          aria-label={t("city.buildingDetails", { building: t(selected.name) })}
         >
           <div className="inspectorTopline">
             <span className={`inspectorIcon inspectorIcon-${selectedId}`}>
               <SelectedIcon size={24} aria-hidden="true" />
             </span>
-            <span className="levelBadge">LEVEL {selectedLevel}</span>
+            <span className="levelBadge">{t("city.level", { level: formatNumber(selectedLevel, locale) })}</span>
           </div>
 
-          <span className="eyebrow">CITY BUILDING</span>
-          <h2>{selected.name}</h2>
-          <p className="inspectorSummary">{selected.benefit}</p>
+          <span className="eyebrow">{t("city.building")}</span>
+          <h2>{t(selected.name)}</h2>
+          <p className="inspectorSummary">{t(selected.benefit)}</p>
 
           <div className="inspectorStats">
-            <span>Current level</span>
-            <b>{selectedLevel}</b>
+            <span>{t("city.currentLevel")}</span>
+            <b>{formatNumber(selectedLevel, locale)}</b>
             {selected.resource ? (
               <>
-                <span>Observed realm rate</span>
+                <span>{t("city.observedRealmRate")}</span>
                 <b className="rateValue">
                   +{formatRate(rates[selected.resource])}{" "}
-                  {selected.resource}/sec
+                  {t("city.perSecond", { resource: t(`common.${selected.resource}`) })}
                 </b>
               </>
             ) : (
               <>
-                <span>Combat power</span>
-                <b className="rateValue">{power}</b>
+                <span>{t("city.combatPower")}</span>
+                <b className="rateValue">{formatNumber(power, locale)}</b>
               </>
             )}
           </div>
 
           <div className="nextUpgrade">
-            <span className="eyebrow">NEXT IMPROVEMENT</span>
+            <span className="eyebrow">{t("city.nextImprovement")}</span>
             <div className="nextLevel">
-              Level {selectedLevel} <ArrowUpRight size={14} /> Level{" "}
-              {selectedLevel + 1}
+              {t("city.nextLevel", {
+                current: formatNumber(selectedLevel, locale),
+                next: formatNumber(selectedLevel + 1, locale),
+              })}
             </div>
-            <p>{selected.output}</p>
+            <p>{t(selected.output)}</p>
             {selected.resource && (
               <div className="outputCallout">
                 <Wind size={14} aria-hidden="true" />
-                Current realm output: +{formatRate(rates[selected.resource])}{" "}
-                {selected.resource}/sec
+                {t("city.currentRealmOutput", {
+                  rate: formatRate(rates[selected.resource]),
+                  resource: t(`common.${selected.resource}`),
+                })}
               </div>
             )}
           </div>
 
           <div className="upgradeCost">
-            <span className="eyebrow">COST</span>
+            <span className="eyebrow">{t("city.cost")}</span>
             <span>
               <Leaf size={15} aria-hidden="true" />
-              {formatResource(woodCost)} wood
+              {formatResource(woodCost)} {t("common.wood")}
             </span>
             <span>
               <Coins size={15} aria-hidden="true" />
-              {formatResource(goldCost)} gold
+              {formatResource(goldCost)} {t("common.gold")}
             </span>
           </div>
 
           {canUpgrade ? (
             <p className="resourceHint resourceHint-ready">
               <CircleCheck size={14} aria-hidden="true" />
-              Resources ready
+              {t("city.resourceReady")}
             </p>
           ) : (
             <p className="resourceHint resourceHint-missing">
-              Need
-              {missingWood > 0 && ` ${formatResource(missingWood)} more wood`}
-              {missingWood > 0 && missingGold > 0 && " and"}
-              {missingGold > 0 && ` ${formatResource(missingGold)} more gold`}
+              {t("city.need")}
+              {missingWood > 0 && ` ${t("city.moreResource", { amount: formatResource(missingWood), resource: t("common.wood") })}`}
+              {missingWood > 0 && missingGold > 0 && ` ${t("city.and")}`}
+              {missingGold > 0 && ` ${t("city.moreResource", { amount: formatResource(missingGold), resource: t("common.gold") })}`}
             </p>
           )}
 
@@ -240,11 +244,11 @@ export default function CityPanel({ game, busy, rates, power, onUpgrade }) {
             type="button"
           >
             <Hammer size={16} aria-hidden="true" />
-            {busy ? "Improving..." : `Upgrade ${selected.name}`}
+            {busy ? t("city.improving") : t("city.upgrade", { building: t(selected.name) })}
             <ArrowUpRight size={16} aria-hidden="true" />
           </button>
           <p className="serverAuthority">
-            The kingdom server confirms all improvements.
+            {t("city.serverAuthority")}
           </p>
         </aside>
       </div>

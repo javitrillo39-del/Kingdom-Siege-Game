@@ -12,7 +12,9 @@ export async function call(path, options = {}) {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(data.error || "Connection error");
+    const error = new Error(data.error || "Connection error");
+    error.status = response.status;
+    throw error;
   }
 
   return data;

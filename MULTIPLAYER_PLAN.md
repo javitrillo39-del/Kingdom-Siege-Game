@@ -1,10 +1,9 @@
 # Plan gradual para Kingdom Siege multijugador
 
-> **Propuesta; pendiente de autorización.** Este documento no implementa ninguna
-> función ni cambia el código, la API o las bases de datos. El backend actual
-> vive en `Downloads/kingdom-siege-api/kingdom-siege-api`; usa Express,
-> SQLite, `bcryptjs`, JWT y las tablas `users` y `games`. Las fases futuras
-> deben preservar las cuentas, partidas, rutas y respuestas actuales.
+> Las fases 1, 2 y 5 están autorizadas e implementadas parcialmente. El backend
+> actual usa Express, PostgreSQL, bcrypt, JWT y conserva SQLite como respaldo.
+> Las fases restantes siguen siendo propuestas; los cambios deben preservar
+> usuarios, partidas, rutas y respuestas existentes.
 
 ## Principios de diseño y seguridad
 
@@ -37,7 +36,7 @@ fechas UTC. Las migraciones no cambian ni eliminan inicialmente `users` o
 | 2 | `friend_requests`, `friendships` | Solicitudes direccionales con estado y relación aceptada con par canónico único de usuarios. |
 | 3 | `pvp_battles` | Participantes, estado, fechas, versión de reglas y snapshots de combate generados por el servidor. |
 | 4 | `battle_events`, `notifications` | Registro inmutable o append-only de eventos y notificaciones paginables por destinatario. |
-| 5 | `private_messages`, `user_blocks`, `user_reports` | Mensajes entre amigos, bloqueos y denuncias con estado de moderación y acceso restringido. |
+| 5 | `chat_channels`, `chat_channel_members`, `chat_messages`, `message_reports`, `muted_users` | Canales globales/por reino, privados entre amistades activas, silenciamientos y denuncias. Los bloqueos existentes también se aplican. |
 | 6 | `alliances`, `alliance_members`, `alliance_invitations` | Alianzas, pertenencia e invitaciones; no crear hasta aprobar sus reglas sociales. |
 
 ### Columnas y restricciones importantes
@@ -62,12 +61,12 @@ fechas UTC. Las migraciones no cambian ni eliminan inicialmente `users` o
 - `notifications`: destinatario, tipo, referencia interna, fecha de creación y
   fecha de lectura. La consulta solo devuelve registros del destinatario
   autenticado.
-- `private_messages`: remitente, destinatario, cuerpo con límite estricto,
-  fechas y estado de moderación/retirada. No publicar el contenido en logs.
-- `user_blocks`: `blocker_id`, `blocked_id`, fecha y par direccional único.
-- `user_reports`: denunciante, denunciado, categoría, texto acotado opcional,
-  referencia a mensaje/batalla si aplica, estado, fechas y acciones de
-  moderación. Solo personal autorizado puede leer/modificar denuncias.
+- `chat_messages`: canal, emisor, texto limitado, timestamps y estado de
+  moderación. No publicar el contenido en logs.
+- `message_reports`: denunciante, mensaje, categoría, detalles acotados, estado
+  y timestamps; reservado a futura revisión administrativa.
+- `muted_users`: relación direccional única entre quien silencia y a quién.
+  Los bloqueos siguen en la tabla social existente `blocked_users`.
 - `alliances`: propietario/creador, nombre único normalizado, descripción,
   visibilidad y fechas. `alliance_members` tendrá par único
   (`alliance_id`, `user_id`) y rol. Las invitaciones tendrán emisor,
@@ -84,7 +83,7 @@ prefijo `/api`, JSON coherente y respuestas sin campos privados.
 | 2 — búsqueda/amistad | `GET /api/players?query=&cursor=`; `GET /api/friends`; `GET /api/friend-requests`; `POST /api/friend-requests`; `POST /api/friend-requests/:id/accept`; `POST /api/friend-requests/:id/reject`; `DELETE /api/friends/:userId`. |
 | 3 — PvP | `POST /api/battles/challenges`; `GET /api/battles/challenges`; `POST /api/battles/challenges/:id/accept`; `POST /api/battles/challenges/:id/decline`. Si se elige matchmaking en lugar de retos, diseñar su contrato antes, no añadirlo implícitamente. |
 | 4 — historial/notificaciones | `GET /api/battles?cursor=`; `GET /api/battles/:id`; `GET /api/notifications?cursor=`; `POST /api/notifications/:id/read`. |
-| 5 — chat/moderación | `GET /api/friends/:userId/messages?cursor=`; `POST /api/friends/:userId/messages`; `POST /api/users/:userId/block`; `DELETE /api/users/:userId/block`; `GET /api/me/blocks`; `POST /api/users/:userId/reports`; rutas internas autenticadas de revisión/moderación, nunca expuestas a usuarios normales. |
+| 5 — chat/moderación | `GET /api/chat/channels`; `GET /api/chat/channels/:channelId/messages?page=&limit=`; `POST /api/chat/channels/:channelId/messages`; `POST /api/chat/private/:publicPlayerId`; `POST /api/chat/messages/:messageId/report`; `POST`/`DELETE /api/chat/mute/:publicPlayerId`. El bloqueo usa las rutas sociales existentes; no hay ruta pública de moderación. |
 | 6 — alianzas | `POST /api/alliances`; `GET /api/alliances?query=&cursor=`; `GET /api/alliances/:id`; `POST /api/alliances/:id/invitations`; `POST /api/alliances/:id/join-requests`; `POST /api/alliances/:id/members/:userId/accept`; `DELETE /api/alliances/:id/members/me`. |
 
 Las rutas para aceptar/rechazar deben validar estado y participantes dentro de
@@ -191,44 +190,35 @@ notificaciones de otros jugadores.
 
 ## Fase 5: chat con bloqueo, denuncia y moderación
 
-No habilitar chat público. Empezar solo con mensajes privados entre amistades
-aceptadas; bloqueo y denuncia deben estar disponibles desde el primer release
-del chat.
+**Estado:** primera versión implementada mediante API autenticada y polling;
+no usa WebSocket ni Supabase Realtime.
 
-1. Crear `private_messages`, `user_blocks` y `user_reports`, con políticas de
-   retención, permisos administrativos restringidos y registro de acciones de
-   moderación. No añadir una ruta de administración pública.
-2. Componentes: `FriendChat`, `MessageComposer`, `BlockUserDialog`,
-   `ReportUserDialog` y una consola moderada solo accesible al rol autorizado.
-3. En cada envío comprobar amistad vigente, que ninguna dirección de la pareja
-   haya bloqueado a la otra, estado de cuentas, tamaño/codificación del
-   mensaje y límites de frecuencia. Sanitizar texto y renderizarlo como texto,
-   nunca como HTML confiable.
-4. Protección contra spam: cuotas por cuenta/IP, intervalos mínimos, límite de
-   mensajes y destinatarios por periodo, longitud estricta, backoff, detección
-   de ráfagas y límites de solicitudes. Para varias instancias, usar un almacén
-   compartido de rate limiting o contadores atómicos; el rate limiter en
-   memoria de una instancia no es suficiente.
-5. Protección contra abuso: bloquear impide mensajes y solicitudes futuras en
-   ambos sentidos según política definida; reportar registra categoría y
-   contexto mínimo, ofrece confirmación al denunciante y no revela al denunciado
-   quién lo reportó. Limitar abuso de denuncias y permitir revisión/apelación.
-6. No incluir contenido de mensajes, JWT, contraseñas, tokens ni datos
-   privados en logs. Definir borrado/retención y acceso a evidencia; encriptar
-   transporte y almacenamiento gestionado según capacidades del proveedor.
-   Limitar retención y acceso a staff. No prometer cifrado de extremo a extremo
-   si no se implementa.
-7. Para tiempo real, preferir una capa gestionada (por ejemplo Supabase
-   Realtime) solo después de comprobar autorización por canal y sus cuotas.
-   El contenido persistido debe seguir validándose mediante API/DB; no exponer
-   una credencial privilegiada en el bundle del frontend.
-8. Pruebas: envío entre amigos, rechazo a no-amigos/bloqueados, bloqueo
-   simultáneo, spam y límites, contenido malicioso, reportes sin filtración,
-   permisos de moderador, no exposición en logs, eliminación/retención y
-   recuperación de conexión.
+1. Migración aditiva `008_chat.sql`: `chat_channels`,
+   `chat_channel_members`, `chat_messages`, `message_reports` y `muted_users`.
+   El realm de cada perfil se guarda en servidor; los canales Global y Realm
+   son compartidos y los privados usan un par único de amigos.
+2. Rutas bajo `/api/chat`: lista de canales/contactos, historial paginado,
+   envío, apertura de chat por Player ID, denuncia y mute/unmute. La identidad
+   del emisor procede del JWT, los mensajes privados exigen amistad vigente y
+   bloqueos o eliminación de amistad revocan el acceso.
+3. La interfaz incluye `ChatPanel`, canales, lista de amigos, conversación y
+   panel de información. Consulta cada tres segundos mientras la pestaña está
+   visible, cancela solicitudes al cambiar canal y reintenta errores
+   transitorios.
+4. Los mensajes son texto plano de hasta 300 caracteres; se rechazan HTML,
+   enlaces y mensajes vacíos. Hay límite de cinco mensajes por diez segundos y
+   detección de repetición. React renderiza el contenido como texto.
+5. Denunciar crea un registro pendiente sin borrar físicamente el mensaje.
+   No existe todavía consola ni ruta pública de moderación; antes de una beta
+   abierta falta definir retención, personal autorizado, política comunitaria,
+   contacto de abuso y flujo de revisión/apelación.
+6. La limitación por usuario en el proceso Express es local a una instancia;
+   las comprobaciones de envío usan además un bloqueo transaccional y conteo
+   PostgreSQL. Para escalar a varias instancias, sustituir el limiter en
+   memoria por uno compartido.
 
-**Criterio de salida:** el usuario puede bloquear y denunciar fácilmente, y la
-API impide que WebSocket o petición HTTP evadan amistad, bloqueo o límites.
+**Criterio de salida pendiente:** validar integración en despliegue y definir
+el flujo de moderación y retención antes de habilitar una beta pública.
 
 ## Fase 6: alianzas
 
@@ -370,8 +360,9 @@ Fuentes oficiales de cuotas consultadas:
 3. **Fase 2:** búsqueda acotada, solicitudes y amistades aceptadas.
 4. **Fase 3:** retos PvP server-authoritative, snapshots y persistencia atómica.
 5. **Fase 4:** historial y notificaciones paginadas.
-6. **Fase 5:** chat solo entre amigos, desplegado junto con bloqueo, denuncia,
-   límites anti-spam y flujo de moderación operativo.
+6. **Fase 5:** primera versión de chat global, por reino y privado entre
+   amigos, con bloqueo, denuncia y límites anti-spam. Falta desplegarla y definir
+   el flujo administrativo de revisión y retención.
 7. **Fase 6:** alianzas, roles e invitaciones después de medir uso y carga de
    moderación.
 8. En cada paso: migración aditiva, tests, backup, despliegue con bandera
@@ -379,4 +370,6 @@ Fuentes oficiales de cuotas consultadas:
    fase siguiente si hay defectos de privacidad, pérdida de datos o
    autorización.
 
-**No implementar ninguna fase hasta recibir autorización explícita.**
+No iniciar las fases restantes sin autorización explícita. La fase 5 ya está
+implementada en el workspace; requiere despliegue y definición de moderación
+antes de habilitar una beta pública.

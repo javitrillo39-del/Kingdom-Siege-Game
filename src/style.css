@@ -67,10 +67,56 @@ button {
   min-height: 100dvh;
   place-items: center;
   padding: 24px;
+  position: relative;
   background:
     radial-gradient(ellipse at 50% 20%, rgb(33 81 104 / 38%), transparent 48%),
     radial-gradient(ellipse at 50% 110%, rgb(120 86 43 / 12%), transparent 42%),
     #070d15;
+}
+
+.languageControl {
+  display: inline-flex;
+  min-width: 0;
+  flex: none;
+  align-items: center;
+  gap: 7px;
+  color: #94a8bc;
+  font-size: 10px;
+}
+
+.languageControl select {
+  max-width: 170px;
+  min-height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #0b1723;
+  color: #dce8f1;
+  font: inherit;
+}
+
+.languageControl select:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.languageControl.compact {
+  position: relative;
+}
+
+.languageControl.compact > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.login > .languageControl {
+  position: absolute;
+  top: 20px;
+  right: 24px;
 }
 
 .loginCard,
@@ -266,11 +312,19 @@ button:disabled {
   min-height: 82px;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
   padding: 0 28px;
   border-bottom: 1px solid var(--line);
   background: rgb(7 13 21 / 83%);
   box-shadow: 0 10px 30px rgb(0 0 0 / 12%);
+}
+
+.gameHeader > .languageControl {
+  max-width: 145px;
+}
+
+.gameHeader > .languageControl select {
+  max-width: 145px;
 }
 
 .brand {
@@ -440,6 +494,9 @@ button:disabled {
 .navButton span {
   font-size: 10px;
   font-weight: 600;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .navButton:hover {

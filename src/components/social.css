@@ -40,7 +40,10 @@
 
 .socialIdentityBanner > div {
   display: grid;
+  min-width: 0;
+  flex: 1 1 0;
   gap: 5px;
+  overflow-wrap: anywhere;
 }
 
 .socialIdentityBanner > div:last-child {
@@ -48,10 +51,20 @@
 }
 
 .socialIdentityBanner strong {
+  display: block;
   color: #b7eef2;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.06em;
+}
+
+.socialPresenceUpdating {
+  display: block;
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: normal;
 }
 
 .socialPlayerId {

@@ -1,55 +1,57 @@
-import { Castle, Map, Shield, Trees, UsersRound, Wheat } from "lucide-react";
+import { Castle, Map, MessageCircle, Shield, Trees, UsersRound, Wheat } from "lucide-react";
 
 export const enemies = [
-  { id: "goblin", name: "Goblin Camp", power: 30, reward: 70 },
-  { id: "bandit", name: "Bandit Fort", power: 85, reward: 160 },
-  { id: "shadow", name: "Shadow Keep", power: 180, reward: 350 },
+  { id: "goblin", name: "map.goblinCamp", power: 30, reward: 70 },
+  { id: "bandit", name: "map.banditFort", power: 85, reward: 160 },
+  { id: "shadow", name: "map.shadowKeep", power: 180, reward: 350 },
 ];
 
 export const buildings = {
   farm: {
-    name: "Farm",
+    name: "city.farm",
     base: 60,
     Icon: Wheat,
-    output: "Produces food",
+    output: "city.farmOutput",
     resource: "food",
-    benefit: "Sustains the people and provisions your armies.",
+    benefit: "city.farmBenefit",
   },
   lumber: {
-    name: "Lumber Mill",
+    name: "city.lumber",
     base: 70,
     Icon: Trees,
-    output: "Produces wood",
+    output: "city.lumberOutput",
     resource: "wood",
-    benefit: "Supplies timber for new structures and defenses.",
+    benefit: "city.lumberBenefit",
   },
   barracks: {
-    name: "Barracks",
+    name: "city.barracks",
     base: 100,
     Icon: Shield,
-    output: "Raises army power",
-    benefit: "Each barracks level contributes 8 combat power.",
+    output: "city.barracksOutput",
+    benefit: "city.barracksBenefit",
   },
   castle: {
-    name: "Castle",
+    name: "city.castle",
     base: 180,
     Icon: Castle,
-    output: "Produces gold",
+    output: "city.castleOutput",
     resource: "gold",
-    benefit: "Adds 20 combat power per level and produces gold.",
+    benefit: "city.castleBenefit",
   },
 };
 
 export const navigation = [
-  { id: "city", label: "City", Icon: Castle },
-  { id: "army", label: "Army", Icon: Shield },
-  { id: "map", label: "Map", Icon: Map },
-  { id: "social", label: "Social", Icon: UsersRound },
+  { id: "city", label: "navigation.city", Icon: Castle },
+  { id: "army", label: "navigation.army", Icon: Shield },
+  { id: "map", label: "navigation.map", Icon: Map },
+  { id: "social", label: "navigation.social", Icon: UsersRound },
+  { id: "chat", label: "navigation.chat", Icon: MessageCircle },
 ];
 
 export const sectionTitles = {
-  city: "Kingdom Development",
-  army: "Royal Army",
-  map: "Battle Map",
-  social: "Social Network",
+  city: "sections.city",
+  army: "sections.army",
+  map: "sections.map",
+  social: "sections.social",
+  chat: "sections.chat",
 };

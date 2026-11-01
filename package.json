@@ -6,14 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:i18n": "node scripts/check-i18n.js",
+    "test:presence": "node --test scripts/test-presence.js"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
     "framer-motion": "latest",
+    "i18next": "^26.6.0",
     "lucide-react": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-i18next": "^17.1.10",
     "typescript": "latest",
     "vite": "latest"
   }

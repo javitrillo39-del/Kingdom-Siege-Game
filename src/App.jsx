@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Login from "./components/Login.jsx";
 import GamePage from "./pages/GamePage.jsx";
 import { call } from "./services/api.js";
 import { logoutPresence } from "./services/presenceApi.js";
+import { apiErrorKey } from "./i18n/errors.js";
 
 export default function App() {
+  const { t } = useTranslation();
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(
     Boolean(localStorage.getItem("ks_token")),
@@ -24,7 +27,7 @@ export default function App() {
           typeof response.user.username !== "string" ||
           !response.user.username.trim()
         ) {
-          throw new Error("The saved session is incomplete. Please sign in again.");
+          throw Object.assign(new Error("SESSION_INCOMPLETE"), { code: "SESSION_INCOMPLETE" });
         }
         if (active) {
           setSession({ user: response.user, game: response.game });
@@ -33,7 +36,7 @@ export default function App() {
       .catch((error) => {
         if (active) {
           localStorage.removeItem("ks_token");
-          setLoadError(error.message);
+          setLoadError(apiErrorKey(error, "login.sessionIncomplete"));
         }
       })
       .finally(() => {
@@ -50,7 +53,7 @@ export default function App() {
       <main className="loading">
         <div className="loadingCard">
           <span className="loadingCrest">✦</span>
-          <p>Opening the gates to your kingdom...</p>
+          <p>{t("loadingScreen.openingGates")}</p>
         </div>
       </main>
     );
@@ -65,7 +68,7 @@ export default function App() {
     try {
       await logoutPresence();
     } catch (error) {
-      logoutError = error.message || "Could not update the last-seen status.";
+      logoutError = apiErrorKey(error, "errors.generic");
     } finally {
       localStorage.removeItem("ks_token");
       setLoadError(logoutError);
@@ -73,11 +76,18 @@ export default function App() {
     }
   }
 
+  function expireSession() {
+    localStorage.removeItem("ks_token");
+    setLoadError("login.sessionExpired");
+    setSession(null);
+  }
+
   return (
     <GamePage
       initial={session.game}
       user={session.user}
       onLogout={logout}
+      onSessionExpired={expireSession}
     />
   );
 }

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { getSocialPageInfo, socialApi } from "../services/socialApi.js";
+import { apiErrorKey } from "../i18n/errors.js";
 
 const emptyLists = {
   friends: [],
@@ -67,7 +68,7 @@ export default function useSocial() {
       setRegisteredPlayers(stats.registeredPlayers);
       setError("");
     } catch (requestError) {
-      setError(requestError.message || "Could not load social data.");
+      setError(apiErrorKey(requestError, "errors.socialLoad"));
     } finally {
       if (!silent) setLoading(false);
     }
@@ -97,7 +98,7 @@ export default function useSocial() {
       setSearchResults(data.players);
     } catch (requestError) {
       setSearchResults([]);
-      setError(requestError.message || "Player search failed.");
+      setError(apiErrorKey(requestError, "errors.playerSearch"));
     } finally {
       setSearching(false);
     }
@@ -110,7 +111,7 @@ export default function useSocial() {
       const data = await socialApi.getPlayer(playerId);
       setSelectedPlayer(data.player);
     } catch (requestError) {
-      setError(requestError.message || "Could not load this profile.");
+      setError(apiErrorKey(requestError, "errors.profileLoad"));
     }
   }, []);
 
@@ -129,7 +130,7 @@ export default function useSocial() {
       }
       return true;
     } catch (requestError) {
-      setError(requestError.message || "Social action failed.");
+      setError(apiErrorKey(requestError, "errors.socialAction"));
       return false;
     } finally {
       setBusy(false);
@@ -150,7 +151,7 @@ export default function useSocial() {
     try {
       await loadList(key, nextPage);
     } catch (requestError) {
-      setError(requestError.message || "Could not load this page.");
+      setError(apiErrorKey(requestError, "errors.pageLoad"));
     }
   }, [lists, loadList, pages, search, searchPage, searchQuery, searchResults]);
 

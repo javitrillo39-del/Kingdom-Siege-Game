@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { buildings, sectionTitles } from "../data/gameConfig.js";
 import { call } from "../services/api.js";
+import { apiErrorKey } from "../i18n/errors.js";
+import { formatNumber } from "../i18n/index.js";
 import useProductionRates from "../hooks/useProductionRates.js";
 import usePresence from "../hooks/usePresence.js";
 import ArmyPanel from "../components/ArmyPanel.jsx";
+import ChatPanel from "../components/ChatPanel.jsx";
 import CityPanel from "../components/CityPanel.jsx";
 import CommanderPanel from "../components/CommanderPanel.jsx";
 import GameHeader from "../components/GameHeader.jsx";
@@ -11,16 +15,17 @@ import GameNavigation from "../components/GameNavigation.jsx";
 import MapPanel from "../components/MapPanel.jsx";
 import SocialPanel from "../components/SocialPanel.jsx";
 
-export default function GamePage({ initial, user, onLogout }) {
+export default function GamePage({ initial, user, onLogout, onSessionExpired }) {
+  const { t, i18n } = useTranslation();
   const [game, setGame] = useState(initial);
   const [panel, setPanel] = useState("city");
-  const [message, setMessage] = useState("Welcome to your kingdom.");
+  const [message, setMessage] = useState({ key: "commander.legacy" });
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState(null);
   const busyRef = useRef(false);
   const toastTimerRef = useRef(null);
   const { rates, recordCollection, resetBaseline } = useProductionRates(initial);
-  const presence = usePresence({ userId: user.id });
+  const presence = usePresence({ userId: user.id, onUnauthorized: onSessionExpired });
 
   const power = useMemo(
     () => game.troops * 5 + game.castle * 20 + game.barracks * 8,
@@ -52,36 +57,43 @@ export default function GamePage({ initial, user, onLogout }) {
           resetBaseline(data.game);
         }
 
-        if (data.message) {
-          setMessage(data.message);
+        if (path === "/game/collect") {
+          setMessage({ key: "commander.collecting" });
         } else if (path === "/game/attack") {
-          setMessage(
-            data.won
-              ? `Victory! +${data.reward} gold`
-              : `Defeat against ${data.enemy || "the enemy"}`,
-          );
+          setMessage(data.won
+            ? {
+                key: "commander.attackVictory",
+                values: { reward: formatNumber(data.reward, i18n.resolvedLanguage || i18n.language) },
+              }
+            : { key: "commander.attackDefeat", values: { enemy: t("map.enemy") } });
+        } else if (path === "/game/train") {
+          setMessage({ key: "commander.troopsTrained" });
+        } else if (path === "/game/repair") {
+          setMessage({ key: "commander.wallsRepaired" });
         }
 
         if (path === "/game/upgrade") {
-          const buildingName = buildings[body.type]?.name || body.type;
+          const buildingName = buildings[body.type]?.name;
           const level = data.game[body.type];
-          notify(
-            "success",
-            data.message || `${buildingName} upgraded to level ${level}.`,
-          );
+          const values = {
+            building: buildingName ? t(buildingName) : t("city.building"),
+            level: formatNumber(level, i18n.resolvedLanguage || i18n.language),
+          };
+          setMessage({ key: "commander.upgradeSuccess", values });
+          notify("success", t("commander.upgradeSuccess", values));
         }
       } catch (error) {
-        const errorMessage = error.message || "Connection error";
-        setMessage(errorMessage);
+        const errorKey = apiErrorKey(error, "commander.actionFailed");
+        setMessage({ key: errorKey });
 
         if (path === "/game/upgrade") {
-          const isResourceError =
-            /not enough|insufficient|resource|afford/i.test(errorMessage);
+          const isResourceError = errorKey === "errors.notEnoughResources" ||
+            errorKey === "errors.notEnoughGold";
           notify(
             isResourceError ? "warning" : "error",
             isResourceError
-              ? `Not enough resources. ${errorMessage}`
-              : errorMessage,
+              ? t("commander.notEnoughResources")
+              : t(errorKey),
           );
         }
       } finally {
@@ -89,7 +101,7 @@ export default function GamePage({ initial, user, onLogout }) {
         setBusy(false);
       }
     },
-    [notify, recordCollection, resetBaseline],
+    [i18n.language, i18n.resolvedLanguage, notify, recordCollection, resetBaseline, t],
   );
 
   useEffect(() => {
@@ -114,11 +126,11 @@ export default function GamePage({ initial, user, onLogout }) {
         <section className="gameContent" aria-labelledby="section-title">
           <div className="title">
             <div>
-              <span className="eyebrow">COMMAND CENTER</span>
-              <h1 id="section-title">{sectionTitles[panel]}</h1>
+              <span className="eyebrow">{t("sections.commandCenter")}</span>
+              <h1 id="section-title">{t(sectionTitles[panel])}</h1>
             </div>
             <span className="commanderGreeting">
-              Commander: <b>{user.username}</b>
+              {t("sections.commander", { username: user.username })}
             </span>
           </div>
 
@@ -127,6 +139,7 @@ export default function GamePage({ initial, user, onLogout }) {
               game={game}
               busy={busy}
               rates={rates}
+              power={power}
               onUpgrade={(type) => action("/game/upgrade", { type })}
             />
           )}
@@ -146,6 +159,9 @@ export default function GamePage({ initial, user, onLogout }) {
             />
           )}
           {panel === "social" && <SocialPanel presence={presence} />}
+          {panel === "chat" && (
+            <ChatPanel username={user.username} onSessionExpired={onSessionExpired} />
+          )}
         </section>
         <CommanderPanel
           user={user}

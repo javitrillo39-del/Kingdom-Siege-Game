@@ -1,0 +1,465 @@
+.chatView {
+  display: grid;
+  min-width: 0;
+  min-height: 570px;
+  grid-template-columns: minmax(150px, 0.72fr) minmax(330px, 2fr) minmax(170px, 0.78fr);
+  overflow: hidden;
+  border: 1px solid rgb(174 201 224 / 12%);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgb(17 31 46 / 94%), rgb(10 19 29 / 97%));
+  box-shadow: 0 12px 30px rgb(0 0 0 / 11%);
+}
+
+.chatChannels,
+.chatDetails {
+  min-width: 0;
+  padding: 14px 11px;
+  background: rgb(5 12 20 / 38%);
+}
+
+.chatChannels {
+  border-right: 1px solid var(--line);
+}
+
+.chatDetails {
+  border-left: 1px solid var(--line);
+  text-align: center;
+}
+
+.chatColumnHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+  padding: 3px 4px 10px;
+  color: #8498aa;
+}
+
+.chatPrivateHeading {
+  margin-top: 20px;
+}
+
+.chatChannelButton,
+.chatContactButton {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  margin: 3px 0;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #a6b6c4;
+  font-size: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chatChannelButton span,
+.chatContactText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chatChannelButton.active,
+.chatContactButton.active {
+  border-color: rgb(81 214 232 / 18%);
+  background: rgb(81 214 232 / 8%);
+  color: #a8eef2;
+}
+
+.chatChannelButton:hover,
+.chatContactButton:hover {
+  background: rgb(255 255 255 / 4%);
+  color: #e6f0f7;
+}
+
+.chatListStatus {
+  margin: 5px 4px;
+  color: #71869a;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.chatContactButton {
+  position: relative;
+  min-height: 46px;
+  padding: 5px 6px;
+}
+
+.chatAvatar,
+.chatDetailAvatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  border: 1px solid rgb(81 214 232 / 19%);
+  border-radius: 50%;
+  background: rgb(81 214 232 / 8%);
+  color: #9de8ef;
+  font-weight: 700;
+}
+
+.chatAvatar {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+
+.chatAvatar.online {
+  border-color: rgb(107 212 168 / 50%);
+}
+
+.chatContactText {
+  display: grid;
+  gap: 3px;
+}
+
+.chatContactText strong {
+  overflow: hidden;
+  color: #dce8f1;
+  font-size: 10px;
+  text-overflow: ellipsis;
+}
+
+.chatContactText small {
+  color: #8196a9;
+  font-size: 8px;
+}
+
+.chatConversation {
+  display: flex;
+  min-width: 0;
+  min-height: 570px;
+  flex-direction: column;
+  padding: 14px;
+}
+
+.chatConversationHeader {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 13px;
+  border-bottom: 1px solid var(--line);
+}
+
+.chatConversationTitle {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.chatHeaderIcon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  place-items: center;
+  border: 1px solid rgb(81 214 232 / 15%);
+  border-radius: 10px;
+  background: rgb(81 214 232 / 7%);
+  color: var(--cyan);
+}
+
+.chatConversationTitle > div {
+  min-width: 0;
+}
+
+.chatConversationTitle h2 {
+  overflow: hidden;
+  margin: 4px 0 0;
+  color: #eef5f9;
+  font-size: 14px;
+  text-overflow: ellipsis;
+}
+
+.chatConnection,
+.chatPresenceLabel {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  color: #869bae;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.chatConnection-connected,
+.chatPresenceLabel.online {
+  color: #77d7a8;
+}
+
+.chatConnection-lost {
+  color: #ff9aa9;
+}
+
+.chatConnection-reconnecting {
+  color: #f0c46b;
+}
+
+.chatMessageList {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 9px;
+  overflow-y: auto;
+  padding: 13px 2px;
+  scrollbar-color: #314658 transparent;
+  scrollbar-width: thin;
+}
+
+.chatEmpty {
+  display: grid;
+  min-height: 180px;
+  flex: 1;
+  place-items: center;
+  color: #8599ab;
+  font-size: 11px;
+  text-align: center;
+}
+
+.chatMessage {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgb(174 201 224 / 9%);
+  border-radius: 10px 10px 10px 3px;
+  background: rgb(255 255 255 / 2.5%);
+}
+
+.chatMessage.own {
+  border-color: rgb(81 214 232 / 14%);
+  border-radius: 10px 10px 3px 10px;
+  background: rgb(81 214 232 / 5%);
+}
+
+.chatMessageHeading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+
+.chatMessageHeading strong {
+  overflow: hidden;
+  color: #b7e9ed;
+  font-size: 10px;
+  text-overflow: ellipsis;
+}
+
+.chatMessagePlayerId {
+  overflow: hidden;
+  color: #71879a;
+  font-size: 8px;
+  text-overflow: ellipsis;
+}
+
+.chatMessageHeading time {
+  margin-left: auto;
+  color: #72879a;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.chatMessage p {
+  margin: 7px 0 0;
+  color: #d9e3eb;
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.chatReportButton {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 4px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #8599aa;
+  font-size: 8px;
+  cursor: pointer;
+}
+
+.chatReportButton:hover:not(:disabled) {
+  background: rgb(255 132 151 / 9%);
+  color: #ff9aa9;
+}
+
+.chatLoadEarlier {
+  align-self: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: rgb(255 255 255 / 3%);
+  color: #9fb0bf;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.chatComposer {
+  display: grid;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.chatComposer textarea {
+  width: 100%;
+  min-height: 52px;
+  resize: vertical;
+  padding: 9px 10px;
+  border: 1px solid rgb(174 201 224 / 14%);
+  border-radius: 8px;
+  outline: none;
+  background: #07111b;
+  color: #edf4f8;
+  font: inherit;
+  font-size: 10px;
+}
+
+.chatComposer textarea:focus {
+  border-color: rgb(81 214 232 / 45%);
+}
+
+.chatComposer textarea::placeholder {
+  color: #6f8397;
+}
+
+.chatComposerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  color: #8598aa;
+  font-size: 9px;
+}
+
+.chatComposerFooter .primaryButton {
+  min-height: 31px;
+  padding: 0 11px;
+  font-size: 10px;
+}
+
+.chatActionStatus {
+  padding-top: 6px;
+  color: #88dce5;
+  font-size: 9px;
+  overflow-wrap: anywhere;
+}
+
+.chatNotice {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 9px;
+  border-radius: 7px;
+  font-size: 9px;
+}
+
+.chatNotice-error {
+  margin-top: 8px;
+  border: 1px solid rgb(255 132 151 / 20%);
+  background: rgb(255 132 151 / 6%);
+  color: #ff9aa9;
+}
+
+.chatDetails > .eyebrow {
+  display: block;
+  text-align: left;
+}
+
+.chatDetailAvatar {
+  width: 54px;
+  height: 54px;
+  margin: 23px auto 10px;
+  font-size: 20px;
+}
+
+.chatDetails h3 {
+  margin: 6px 0;
+  color: #e8f1f6;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.chatDetailPlayerId {
+  display: block;
+  color: #90b4c3;
+  font-size: 9px;
+  overflow-wrap: anywhere;
+}
+
+.chatPresenceLabel {
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.chatDetails > p {
+  color: #8fa3b5;
+  font-size: 10px;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.chatDetailActions {
+  display: grid;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.chatUtilityButton {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgb(174 201 224 / 12%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 3%);
+  color: #b6c4d0;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.chatUtilityButton:hover {
+  border-color: rgb(81 214 232 / 28%);
+  color: #e6f4f8;
+}
+
+.chatUtilityButton.danger:hover {
+  border-color: rgb(255 132 151 / 34%);
+  color: #ff9aa9;
+}
+
+.chatRule {
+  display: flex;
+  gap: 7px;
+  margin-top: 13px;
+  color: #8498aa;
+  font-size: 9px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.chatRule svg {
+  flex: none;
+  color: #7bcbd3;
+}
+
+@media (max-width: 1150px) {
+  .chatView {
+    grid-template-columns: minmax(140px, 0.7fr) minmax(310px, 2fr) minmax(150px, 0.7fr);
+  }
+}
