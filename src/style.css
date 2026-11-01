@@ -1,0 +1,1837 @@
+:root {
+  font-family: Inter, "Segoe UI", sans-serif;
+  color: #eef4fa;
+  background: #070d15;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --surface: #0c1521;
+  --surface-raised: #101d2b;
+  --surface-soft: #111f2e;
+  --line: rgb(174 201 224 / 11%);
+  --text-muted: #8fa3b8;
+  --cyan: #51d6e8;
+  --cyan-dark: #133a45;
+  --gold: #f0c46b;
+  --green: #6bd4a8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow-x: auto;
+  background: #070d15;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.eyebrow {
+  color: #94a8bc;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.login,
+.loading {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 50% 20%, rgb(33 81 104 / 38%), transparent 48%),
+    radial-gradient(ellipse at 50% 110%, rgb(120 86 43 / 12%), transparent 42%),
+    #070d15;
+}
+
+.loginCard,
+.loadingCard {
+  width: min(420px, 100%);
+  padding: 40px;
+  border: 1px solid rgb(117 173 198 / 19%);
+  border-radius: 22px;
+  background: linear-gradient(145deg, #112131, #0b1420 72%);
+  box-shadow: 0 30px 90px rgb(0 0 0 / 42%);
+  text-align: center;
+}
+
+.loginCrest,
+.commanderCrest,
+.brandCrest {
+  display: grid;
+  flex: none;
+  place-items: center;
+  color: var(--gold);
+}
+
+.loginCrest {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 22px;
+  border: 1px solid rgb(240 196 107 / 30%);
+  border-radius: 18px;
+  background: rgb(240 196 107 / 9%);
+}
+
+.loginCard h1 {
+  margin: 8px 0 0;
+  font-family: Inter, "Segoe UI", sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.08em;
+}
+
+.loginCard > p {
+  margin: 8px 0 26px;
+  color: var(--text-muted);
+}
+
+.loginCard input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  background: #08111b;
+  color: #f2f7fb;
+}
+
+.loginCard input:focus {
+  border-color: rgb(81 214 232 / 65%);
+  box-shadow: 0 0 0 3px rgb(81 214 232 / 10%);
+}
+
+.loginCard input::placeholder {
+  color: #71859a;
+}
+
+.passwordField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding-left: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #08111b;
+  color: #758ca2;
+}
+
+.passwordField input {
+  border: 0;
+  background: transparent;
+}
+
+.passwordField:focus-within {
+  border-color: rgb(81 214 232 / 65%);
+  box-shadow: 0 0 0 3px rgb(81 214 232 / 10%);
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.primaryButton {
+  background: var(--cyan);
+  color: #07151b;
+}
+
+.primaryButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #7ce5f1;
+}
+
+.secondaryButton {
+  border-color: rgb(107 212 168 / 27%);
+  background: rgb(107 212 168 / 9%);
+  color: #a4ebca;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  border-color: rgb(107 212 168 / 55%);
+  background: rgb(107 212 168 / 15%);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.loginSubmit {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 18px;
+  font-size: 13px;
+}
+
+.textButton {
+  margin-top: 18px;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  color: #85dce8;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.textButton:hover {
+  color: #b7f1f7;
+}
+
+.error {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid rgb(255 132 151 / 23%);
+  border-radius: 9px;
+  background: rgb(255 132 151 / 8%);
+  color: #ff9aa9;
+  font-size: 12px;
+}
+
+.loadingCard {
+  color: var(--text-muted);
+}
+
+.loadingCard p {
+  margin: 12px 0 0;
+}
+
+.loadingCrest {
+  color: var(--gold);
+  font-size: 30px;
+}
+
+.app {
+  display: flex;
+  width: 100%;
+  min-width: 1000px;
+  height: 100vh;
+  height: 100dvh;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% -20%, rgb(44 86 115 / 35%), transparent 55%),
+    linear-gradient(135deg, #0c1723, #09111b 60%, #0c1721);
+}
+
+.gameHeader {
+  z-index: 1;
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--line);
+  background: rgb(7 13 21 / 83%);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 12%);
+}
+
+.brand {
+  display: flex;
+  min-width: 200px;
+  flex: 0 0 230px;
+  align-items: center;
+  gap: 12px;
+}
+
+.brandCrest {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgb(240 196 107 / 25%);
+  border-radius: 12px;
+  background: rgb(240 196 107 / 8%);
+}
+
+.brandWords small,
+.brandWords b,
+.resource small,
+.resource b,
+.health small,
+.health b {
+  display: block;
+}
+
+.brandWords small {
+  margin-bottom: 3px;
+  color: #94a8bc;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+}
+
+.brandWords b {
+  font-family: Inter, "Segoe UI", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.resources {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  justify-content: center;
+  gap: 10px;
+}
+
+.resource {
+  display: flex;
+  min-width: 112px;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: linear-gradient(145deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 1%));
+}
+
+.resourceIcon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  place-items: center;
+  border-radius: 9px;
+  background: rgb(81 214 232 / 9%);
+  color: var(--cyan);
+}
+
+.resource:nth-child(2) .resourceIcon {
+  background: rgb(107 212 168 / 9%);
+  color: var(--green);
+}
+
+.resource:nth-child(3) .resourceIcon {
+  background: rgb(240 196 107 / 9%);
+  color: var(--gold);
+}
+
+.resource:nth-child(4) .resourceIcon {
+  background: rgb(181 153 240 / 10%);
+  color: #c1a8ff;
+}
+
+.resource small,
+.health small {
+  margin-bottom: 2px;
+  color: #8fa3b8;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.resource b,
+.health b {
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.health {
+  display: flex;
+  min-width: 105px;
+  flex: 0 0 120px;
+  align-items: center;
+  gap: 10px;
+  color: #fa7d89;
+}
+
+.healthIcon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 10px;
+  background: rgb(250 125 137 / 10%);
+}
+
+.layout {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: 88px minmax(0, 1fr) 276px;
+}
+
+.gameNavigation {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  padding: 20px 11px;
+  border-right: 1px solid var(--line);
+  background: rgb(6 12 19 / 55%);
+}
+
+.navLabel {
+  padding: 4px 0 9px;
+  color: #63788d;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-align: center;
+}
+
+.navButton {
+  display: flex;
+  min-height: 62px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #8b9caf;
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background 150ms ease,
+    border-color 150ms ease;
+}
+
+.navButton span {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.navButton:hover {
+  background: rgb(255 255 255 / 4%);
+  color: #e5f1f8;
+}
+
+.navButton.active {
+  border-color: rgb(81 214 232 / 20%);
+  background: linear-gradient(135deg, rgb(81 214 232 / 16%), rgb(81 214 232 / 6%));
+  color: #73e5f1;
+  box-shadow: inset 2px 0 #51d6e8;
+}
+
+.logout {
+  margin-top: auto;
+}
+
+.gameContent {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 26px 28px 30px;
+  scrollbar-color: #31475b transparent;
+  scrollbar-width: thin;
+}
+
+.title {
+  display: flex;
+  min-height: 74px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 17px;
+}
+
+.title h1 {
+  margin: 5px 0 0;
+  font-family: Inter, "Segoe UI", sans-serif;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.commanderGreeting {
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgb(255 255 255 / 2%);
+  color: #90a5ba;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.commanderGreeting b {
+  color: #e4edf5;
+  font-weight: 600;
+}
+
+.buildingGrid,
+.armyGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.buildingCard,
+.armyCard,
+.enemyCard {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: linear-gradient(145deg, rgb(19 33 48 / 96%), rgb(12 22 33 / 98%));
+  box-shadow: 0 14px 35px rgb(0 0 0 / 13%);
+}
+
+.buildingCard {
+  min-height: 212px;
+  padding: 18px 19px 15px;
+  animation: cardArrival 300ms both;
+  animation-delay: calc(var(--card-order, 0) * 35ms);
+}
+
+.buildingCard::before,
+.armyCard::before,
+.enemyCard::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(117 206 222 / 25%), transparent);
+  content: "";
+}
+
+@keyframes cardArrival {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.buildingTopline,
+.buildingFooter,
+.armyCardHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.buildingIcon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  place-items: center;
+  border: 1px solid rgb(81 214 232 / 15%);
+  border-radius: 12px;
+  background: rgb(81 214 232 / 8%);
+  color: #70dce9;
+}
+
+.buildingCard-lumber .buildingIcon {
+  border-color: rgb(107 212 168 / 16%);
+  background: rgb(107 212 168 / 8%);
+  color: #84d9b2;
+}
+
+.buildingCard-barracks .buildingIcon {
+  border-color: rgb(187 159 240 / 16%);
+  background: rgb(187 159 240 / 8%);
+  color: #bea5ed;
+}
+
+.buildingCard-castle .buildingIcon {
+  border-color: rgb(240 196 107 / 16%);
+  background: rgb(240 196 107 / 8%);
+  color: #e9c477;
+}
+
+.levelBadge {
+  padding: 6px 9px;
+  border: 1px solid rgb(81 214 232 / 17%);
+  border-radius: 20px;
+  background: rgb(81 214 232 / 6%);
+  color: #77dce8;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.buildingCard h2 {
+  margin: 15px 0 4px;
+  font-family: Inter, "Segoe UI", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.buildingCard p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.cardDivider {
+  height: 1px;
+  margin: 15px 0 12px;
+  background: var(--line);
+}
+
+.buildingFooter {
+  flex-wrap: wrap;
+}
+
+.costLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #a7b6c5;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.costLabel svg {
+  color: var(--gold);
+}
+
+.costSeparator {
+  color: #53687b;
+}
+
+.upgradeButton {
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 10px;
+}
+
+.armyCard {
+  min-height: 345px;
+  padding: 22px;
+  text-align: center;
+}
+
+.armyCardHeading {
+  justify-content: flex-start;
+  margin-bottom: 28px;
+  text-align: left;
+}
+
+.armyCardHeading .buildingIcon {
+  width: 40px;
+  height: 40px;
+}
+
+.wallCard .buildingIcon {
+  border-color: rgb(107 212 168 / 20%);
+  background: rgb(107 212 168 / 8%);
+  color: var(--green);
+}
+
+.statLabel {
+  display: block;
+  color: #8fa3b8;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.armyStat {
+  display: block;
+  margin: 8px 0;
+  font-family: Inter, "Segoe UI", sans-serif;
+  font-size: 54px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+.armyDetail {
+  margin: 0 0 22px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.armyDetail b {
+  margin-left: 5px;
+  color: #d7e5ef;
+}
+
+.bar {
+  height: 7px;
+  margin: 17px 0 20px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #050a10;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #48bd8a, #84e2a9);
+  transition: width 250ms ease;
+}
+
+.wideButton {
+  width: 100%;
+  min-height: 42px;
+  font-size: 11px;
+}
+
+.buttonCost {
+  margin-left: auto;
+  color: currentcolor;
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.enemyGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.enemyCard {
+  display: flex;
+  min-height: 350px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px 17px 17px;
+}
+
+.enemyCard-goblin {
+  background:
+    radial-gradient(ellipse at 95% 0%, rgb(88 172 104 / 15%), transparent 48%),
+    linear-gradient(145deg, #13251f, #101b20 76%);
+}
+
+.enemyCard-bandit {
+  background:
+    radial-gradient(ellipse at 95% 0%, rgb(205 124 73 / 16%), transparent 48%),
+    linear-gradient(145deg, #282019, #1d1919 76%);
+}
+
+.enemyCard-shadow {
+  background:
+    radial-gradient(ellipse at 95% 0%, rgb(145 105 205 / 17%), transparent 48%),
+    linear-gradient(145deg, #211d2b, #171822 76%);
+}
+
+.enemyIcon {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 22px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 16px;
+  background: rgb(255 255 255 / 5%);
+  color: #c5d3df;
+}
+
+.enemyCard .eyebrow {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+
+.enemyCard h2 {
+  margin: 10px 0 0;
+  font-family: Manrope, "Segoe UI", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.enemyStats {
+  display: grid;
+  width: 100%;
+  gap: 10px;
+  margin: 22px 0 20px;
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.enemyStats span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #91a3b4;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.enemyStats b {
+  color: #e5edf4;
+  font-size: 11px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.attackButton {
+  width: 100%;
+  min-height: 38px;
+  margin-top: auto;
+  font-size: 10px;
+}
+
+.commanderPanel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 24px 19px 16px;
+  border-left: 1px solid var(--line);
+  background: linear-gradient(180deg, rgb(11 20 30 / 88%), rgb(8 15 23 / 72%));
+}
+
+.commanderIdentity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.commanderCrest {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 19px;
+  border: 1px solid rgb(240 196 107 / 23%);
+  border-radius: 15px;
+  background: linear-gradient(145deg, rgb(240 196 107 / 17%), rgb(240 196 107 / 5%));
+}
+
+.commanderIdentity .eyebrow {
+  font-size: 9px;
+}
+
+.commanderIdentity h2 {
+  width: 100%;
+  margin: 7px 0 4px;
+  overflow: hidden;
+  font-family: Manrope, "Segoe UI", sans-serif;
+  font-size: 18px;
+  text-overflow: ellipsis;
+}
+
+.commanderRank {
+  color: #8094a8;
+  font-size: 10px;
+}
+
+.reportHeading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 33px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.reportIcon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 8px;
+  background: rgb(81 214 232 / 8%);
+  color: #71dce9;
+}
+
+.reportHeading h3 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.reportMessage {
+  min-height: 78px;
+  margin: 12px 0 18px;
+  color: #a6b6c5;
+  font-size: 12px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.victoryCard {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  align-items: center;
+  column-gap: 10px;
+  padding: 13px;
+  border: 1px solid rgb(240 196 107 / 15%);
+  border-radius: 11px;
+  background: linear-gradient(120deg, rgb(240 196 107 / 7%), rgb(240 196 107 / 2%));
+}
+
+.victoryIcon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  grid-row: span 2;
+  place-items: center;
+  border-radius: 9px;
+  background: rgb(240 196 107 / 11%);
+  color: var(--gold);
+}
+
+.victoryValue {
+  font-family: Manrope, "Segoe UI", sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.victoryLabel {
+  color: #9cabb8;
+  font-size: 10px;
+}
+
+.commanderFooter {
+  margin-top: auto;
+  padding-top: 18px;
+  color: #5f7387;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.cityView {
+  display: grid;
+  gap: 14px;
+}
+
+.cityEconomy {
+  display: grid;
+  min-height: 61px;
+  grid-template-columns: minmax(210px, 1.5fr) repeat(3, minmax(105px, 1fr));
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(110deg, rgb(17 33 43 / 94%), rgb(12 22 32 / 96%));
+}
+
+.economyHeading,
+.economyRate {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+}
+
+.economyHeading {
+  color: #88d9c0;
+}
+
+.economyHeading b,
+.economyHeading small,
+.economyRateValue b,
+.economyRateValue small {
+  display: block;
+}
+
+.economyHeading b {
+  color: #e2edf1;
+  font-size: 11px;
+}
+
+.economyHeading small {
+  margin-top: 2px;
+  color: #7f95a4;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.economyRate {
+  justify-content: center;
+  padding: 6px 8px;
+  border-left: 1px solid var(--line);
+  color: #83dcb7;
+}
+
+.economyRate-food {
+  color: #d7bd73;
+}
+
+.economyRate-wood {
+  color: #83dcb7;
+}
+
+.economyRate-gold {
+  color: #e9bd67;
+}
+
+.economyRateValue b {
+  color: #e8f0f3;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.economyRateValue small {
+  margin-top: 1px;
+  color: #8296a7;
+  font-size: 9px;
+}
+
+.cityScene {
+  display: grid;
+  min-width: 0;
+  min-height: 470px;
+  grid-template-columns: minmax(0, 1.32fr) minmax(290px, 0.88fr);
+  gap: 13px;
+}
+
+.cityMap,
+.buildingInspector {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgb(169 199 180 / 15%);
+  border-radius: 15px;
+  box-shadow: 0 16px 38px rgb(0 0 0 / 15%);
+}
+
+.cityMap {
+  display: flex;
+  min-height: 470px;
+  flex-direction: column;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 16% 79%, rgb(175 157 91 / 14%), transparent 30%),
+    radial-gradient(ellipse at 91% 29%, rgb(57 128 90 / 20%), transparent 36%),
+    linear-gradient(155deg, #1d3836 0%, #233c34 47%, #28382f 100%);
+}
+
+.cityMapHeader,
+.cityMapFooter {
+  z-index: 2;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  background: rgb(7 17 20 / 46%);
+  backdrop-filter: blur(7px);
+}
+
+.cityMapHeader {
+  min-height: 54px;
+  border-bottom: 1px solid rgb(218 233 218 / 11%);
+}
+
+.mapSeal {
+  display: grid;
+  width: 31px;
+  height: 31px;
+  flex: none;
+  place-items: center;
+  border: 1px solid rgb(233 198 127 / 38%);
+  border-radius: 9px;
+  background: rgb(233 198 127 / 9%);
+  color: #e9c67f;
+  font-family: Georgia, serif;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cityMapHeader > span:nth-child(2) {
+  display: grid;
+  gap: 2px;
+}
+
+.cityMapHeader .eyebrow {
+  color: #afc0a9;
+  font-size: 8px;
+}
+
+.cityMapHeader > span:nth-child(2) b {
+  color: #f0eee0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cityPopulation {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  color: #b6c8b7;
+  font-size: 9px;
+}
+
+.populationDot,
+.readyDot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: #87dda7;
+  box-shadow: 0 0 9px rgb(135 221 167 / 60%);
+}
+
+.cityLandscape {
+  position: absolute;
+  z-index: -1;
+  inset: 54px 0 34px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.landmarkHill {
+  position: absolute;
+  width: 80%;
+  height: 48%;
+  border: 1px solid rgb(186 203 147 / 8%);
+  border-radius: 50%;
+  background: linear-gradient(150deg, rgb(109 147 91 / 28%), rgb(41 80 57 / 5%));
+}
+
+.landmarkHill-far {
+  top: -25%;
+  left: -12%;
+  transform: rotate(9deg);
+}
+
+.landmarkHill-near {
+  right: -24%;
+  bottom: -27%;
+  width: 91%;
+  height: 60%;
+  transform: rotate(-15deg);
+}
+
+.landmarkRiver {
+  position: absolute;
+  top: -13%;
+  right: 9%;
+  width: 14%;
+  height: 133%;
+  border: 1px solid rgb(138 188 176 / 21%);
+  border-radius: 48%;
+  background: linear-gradient(90deg, rgb(71 123 126 / 20%), rgb(120 174 169 / 24%));
+  transform: rotate(27deg);
+}
+
+.landmarkRoad {
+  position: absolute;
+  top: 45%;
+  left: -18%;
+  width: 137%;
+  height: 17%;
+  border: 1px solid rgb(210 196 143 / 23%);
+  border-right: 0;
+  border-left: 0;
+  background: linear-gradient(180deg, rgb(161 143 97 / 10%), rgb(202 187 132 / 17%), rgb(161 143 97 / 9%));
+  transform: rotate(-13deg);
+}
+
+.landmarkField {
+  position: absolute;
+  right: -4%;
+  bottom: 13%;
+  width: 25%;
+  height: 21%;
+  border: 1px solid rgb(225 197 119 / 23%);
+  border-radius: 45% 7% 9% 35%;
+  background: repeating-linear-gradient(165deg, transparent 0 8px, rgb(226 198 118 / 18%) 9px 10px);
+  transform: rotate(-8deg);
+}
+
+.landmarkTree {
+  position: absolute;
+  width: 22px;
+  height: 29px;
+  border: 1px solid rgb(188 206 151 / 20%);
+  border-radius: 48% 48% 42% 42%;
+  background: radial-gradient(ellipse at 40% 32%, #779366 0 7%, #426448 46%, #294738 100%);
+  box-shadow: 0 5px 0 -2px rgb(18 35 29 / 56%);
+}
+
+.landmarkTree-one {
+  top: 20%;
+  left: 8%;
+}
+
+.landmarkTree-two {
+  top: 32%;
+  right: 9%;
+  transform: scale(0.82);
+}
+
+.landmarkTree-three {
+  bottom: 17%;
+  left: 13%;
+  transform: scale(0.78);
+}
+
+.landmarkTree-four {
+  top: 67%;
+  right: 19%;
+  transform: scale(0.68);
+}
+
+.cityPlots {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  padding: 10px 12px;
+}
+
+.cityBuilding {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  outline: none;
+  background: rgb(13 27 24 / 13%);
+  color: #edf0dc;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+  animation: cityPlotArrival 380ms both;
+  animation-delay: calc(var(--plot-order, 0) * 55ms);
+}
+
+.cityBuilding:hover,
+.cityBuilding:focus-visible {
+  border-color: rgb(219 232 197 / 38%);
+  background: rgb(8 22 20 / 32%);
+  transform: translateY(-2px);
+}
+
+.cityBuilding.is-selected {
+  border-color: rgb(231 202 132 / 66%);
+  background: linear-gradient(145deg, rgb(24 43 34 / 72%), rgb(12 30 26 / 55%));
+  box-shadow:
+    inset 0 0 0 1px rgb(231 202 132 / 12%),
+    0 5px 20px rgb(4 13 10 / 20%);
+}
+
+.cityBuilding.is-selected .plotStructure {
+  transform: translateY(-2px);
+}
+
+.cityBuilding.can-upgrade .plotStatus {
+  color: #a4dfaf;
+}
+
+.cityBuilding.needs-resources .plotStatus {
+  color: #c1b895;
+}
+
+.cityBuilding.is-upgraded .plotStructure {
+  animation: buildingUpgrade 700ms ease-out;
+}
+
+@keyframes cityPlotArrival {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes buildingUpgrade {
+  0% {
+    filter: brightness(1);
+    transform: translateY(0) scale(1);
+  }
+  38% {
+    filter: brightness(1.65);
+    transform: translateY(-5px) scale(1.06);
+  }
+  100% {
+    filter: brightness(1);
+    transform: translateY(0) scale(1);
+  }
+}
+
+.plotLevel {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  color: #d5d9c7;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.plotStructure {
+  position: relative;
+  display: grid;
+  width: 66px;
+  height: 61px;
+  place-items: end center;
+  filter: drop-shadow(0 5px 4px rgb(7 15 11 / 35%));
+  transition: filter 180ms ease, transform 180ms ease;
+}
+
+.plotRoof {
+  position: absolute;
+  top: 2px;
+  width: 59px;
+  height: 28px;
+  border: 1px solid rgb(239 204 146 / 45%);
+  border-radius: 7px 7px 3px 3px;
+  background: linear-gradient(145deg, #9d6650, #6e443d);
+  clip-path: polygon(50% 0, 100% 47%, 94% 100%, 7% 100%, 0 47%);
+}
+
+.plotBuilding {
+  position: absolute;
+  bottom: 3px;
+  display: grid;
+  width: 47px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgb(215 196 155 / 38%);
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(145deg, #a48762, #665a46);
+  color: #f0dbab;
+}
+
+.plotDoor {
+  position: absolute;
+  bottom: 3px;
+  left: calc(50% - 5px);
+  width: 10px;
+  height: 17px;
+  border: 1px solid rgb(239 211 157 / 52%);
+  border-bottom: 0;
+  border-radius: 5px 5px 0 0;
+  background: #493d31;
+}
+
+.cityBuilding-farm .plotRoof {
+  background: linear-gradient(145deg, #b7854e, #846044);
+}
+
+.cityBuilding-farm .plotBuilding {
+  background: linear-gradient(145deg, #a99a6b, #756949);
+  color: #e9d889;
+}
+
+.cityBuilding-lumber .plotRoof {
+  background: linear-gradient(145deg, #88704c, #5c533d);
+}
+
+.cityBuilding-lumber .plotBuilding {
+  background: linear-gradient(145deg, #897b59, #5b5943);
+  color: #c5d19c;
+}
+
+.cityBuilding-barracks .plotRoof {
+  background: linear-gradient(145deg, #9c564a, #633c3b);
+}
+
+.cityBuilding-barracks .plotBuilding {
+  background: linear-gradient(145deg, #82745d, #555145);
+  color: #d4b8a0;
+}
+
+.cityBuilding-castle .plotStructure {
+  width: 75px;
+  height: 67px;
+}
+
+.cityBuilding-castle .plotRoof {
+  top: 0;
+  width: 68px;
+  height: 31px;
+  background: linear-gradient(145deg, #b18c57, #806542);
+}
+
+.cityBuilding-castle .plotBuilding {
+  width: 55px;
+  height: 40px;
+  background: linear-gradient(145deg, #a18b68, #68604f);
+  color: #ead29a;
+}
+
+.cityBuilding-castle .plotDoor {
+  bottom: 3px;
+}
+
+.plotName {
+  max-width: 100%;
+  overflow: hidden;
+  color: #f0eddd;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plotStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #a3b19d;
+  font-size: 8px;
+}
+
+.plotStatus .readyDot {
+  width: 5px;
+  height: 5px;
+}
+
+.cityMapFooter {
+  min-height: 34px;
+  justify-content: space-between;
+  border-top: 1px solid rgb(218 233 218 / 11%);
+  color: #aab8a7;
+  font-size: 8px;
+}
+
+.mapCoordinates {
+  color: #d0bd88;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  white-space: nowrap;
+}
+
+.buildingInspector {
+  display: flex;
+  min-height: 470px;
+  flex-direction: column;
+  padding: 19px;
+  border-color: rgb(165 184 197 / 15%);
+  background:
+    radial-gradient(ellipse at 95% 0%, rgb(76 129 111 / 12%), transparent 43%),
+    linear-gradient(150deg, #13232d, #0d1923 78%);
+  animation: inspectorEnter 200ms ease-out;
+}
+
+@keyframes inspectorEnter {
+  from {
+    opacity: 0.78;
+    transform: translateX(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.inspectorTopline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.inspectorIcon {
+  display: grid;
+  width: 45px;
+  height: 45px;
+  place-items: center;
+  border: 1px solid rgb(231 202 132 / 24%);
+  border-radius: 12px;
+  background: rgb(231 202 132 / 8%);
+  color: #e7ca84;
+}
+
+.inspectorIcon-lumber {
+  border-color: rgb(131 220 183 / 24%);
+  background: rgb(131 220 183 / 8%);
+  color: #83dcb7;
+}
+
+.inspectorIcon-barracks {
+  border-color: rgb(190 165 237 / 24%);
+  background: rgb(190 165 237 / 8%);
+  color: #bea5ed;
+}
+
+.inspectorIcon-castle {
+  border-color: rgb(233 196 119 / 25%);
+  background: rgb(233 196 119 / 8%);
+  color: #e9c477;
+}
+
+.buildingInspector > .eyebrow {
+  font-size: 8px;
+}
+
+.buildingInspector h2 {
+  margin: 5px 0 5px;
+  color: #f0f2ed;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.inspectorSummary {
+  min-height: 34px;
+  margin: 0;
+  color: #9cabb4;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.inspectorStats {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 9px;
+  margin-top: 13px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.inspectorStats span {
+  color: #8398a6;
+  font-size: 10px;
+}
+
+.inspectorStats b {
+  color: #e0e9e9;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.inspectorStats .rateValue {
+  color: #b0e1c4;
+}
+
+.nextUpgrade {
+  padding-top: 14px;
+}
+
+.nextUpgrade > .eyebrow {
+  font-size: 8px;
+}
+
+.nextLevel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  color: #e4d3a6;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.nextUpgrade > p {
+  margin: 4px 0 0;
+  color: #91a2ad;
+  font-size: 9px;
+}
+
+.outputCallout {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: #a5d7bd;
+  font-size: 9px;
+}
+
+.upgradeCost {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 11px;
+  margin-top: auto;
+  padding: 11px 0 8px;
+}
+
+.upgradeCost .eyebrow {
+  width: 100%;
+  font-size: 8px;
+}
+
+.upgradeCost > span:not(.eyebrow) {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #d4dedb;
+  font-size: 10px;
+}
+
+.upgradeCost > span:nth-child(2) svg {
+  color: #8bc6a3;
+}
+
+.upgradeCost > span:nth-child(3) svg {
+  color: #e8bf69;
+}
+
+.resourceHint {
+  display: flex;
+  min-height: 15px;
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 8px;
+  font-size: 9px;
+}
+
+.resourceHint-ready {
+  color: #8ee1ab;
+}
+
+.resourceHint-missing {
+  color: #dfb979;
+}
+
+.inspectorUpgrade {
+  width: 100%;
+  min-height: 39px;
+  justify-content: space-between;
+  font-size: 10px;
+}
+
+.upgradeUnavailable {
+  border-color: rgb(216 171 105 / 40%);
+  background: rgb(120 83 42 / 20%);
+  color: #f0c77e;
+}
+
+.upgradeUnavailable:hover:not(:disabled) {
+  border-color: rgb(216 171 105 / 68%);
+  background: rgb(137 91 42 / 28%);
+  color: #f5d69f;
+}
+
+.serverAuthority {
+  margin: 8px 0 0;
+  color: #647988;
+  font-size: 8px;
+  text-align: center;
+}
+
+.gameToast {
+  position: absolute;
+  z-index: 5;
+  right: 294px;
+  bottom: 23px;
+  display: flex;
+  max-width: min(390px, calc(100vw - 32px));
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  border: 1px solid rgb(127 214 163 / 30%);
+  border-radius: 11px;
+  background: #14251f;
+  box-shadow: 0 12px 38px rgb(0 0 0 / 36%);
+  color: #dff3e5;
+  font-size: 11px;
+  animation: toastArrival 180ms ease-out;
+}
+
+.gameToast-warning,
+.gameToast-error {
+  border-color: rgb(231 187 112 / 35%);
+  background: #2a2117;
+  color: #f4dfbc;
+}
+
+.gameToast-error {
+  border-color: rgb(239 132 132 / 38%);
+  background: #2a1b1d;
+  color: #f3d9dc;
+}
+
+.toastMark {
+  display: grid;
+  width: 21px;
+  height: 21px;
+  flex: none;
+  place-items: center;
+  border-radius: 50%;
+  background: rgb(127 214 163 / 16%);
+  color: #91e0ad;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.gameToast-warning .toastMark,
+.gameToast-error .toastMark {
+  background: rgb(231 187 112 / 15%);
+  color: #f0c77e;
+}
+
+@keyframes toastArrival {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-height: 700px) {
+  .gameHeader {
+    min-height: 72px;
+  }
+
+  .gameContent {
+    padding-top: 16px;
+  }
+
+  .title {
+    min-height: 60px;
+    margin-bottom: 10px;
+  }
+
+  .buildingCard {
+    min-height: 198px;
+    padding-top: 14px;
+  }
+
+  .armyCard,
+  .enemyCard {
+    min-height: 310px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .cityEconomy {
+    grid-template-columns: minmax(190px, 1.3fr) repeat(3, minmax(90px, 1fr));
+  }
+
+  .cityScene {
+    grid-template-columns: minmax(0, 1.15fr) minmax(270px, 0.9fr);
+  }
+
+  .cityMapHeader,
+  .cityMapFooter {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .buildingInspector {
+    padding: 16px;
+  }
+}
+
+@media (max-height: 800px) {
+  .gameContent {
+    padding-top: 16px;
+    padding-bottom: 12px;
+  }
+
+  .title {
+    min-height: 56px;
+    margin-bottom: 9px;
+  }
+
+  .cityView {
+    gap: 9px;
+  }
+
+  .cityEconomy {
+    min-height: 52px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .cityScene,
+  .cityMap,
+  .buildingInspector {
+    min-height: 430px;
+  }
+
+  .buildingInspector {
+    padding: 14px;
+  }
+
+  .inspectorTopline {
+    margin-bottom: 12px;
+  }
+
+  .inspectorSummary {
+    min-height: 0;
+  }
+
+  .inspectorStats {
+    gap: 7px;
+    margin-top: 9px;
+    padding: 9px 0;
+  }
+
+  .nextUpgrade {
+    padding-top: 10px;
+  }
+
+  .serverAuthority {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
