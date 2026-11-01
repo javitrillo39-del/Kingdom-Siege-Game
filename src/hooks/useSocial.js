@@ -75,7 +75,7 @@ export default function useSocial() {
 
   useEffect(() => {
     void reload();
-    const intervalId = window.setInterval(() => void reload(true), 60_000);
+    const intervalId = window.setInterval(() => void reload(true), 30_000);
     return () => window.clearInterval(intervalId);
   }, [reload]);
 

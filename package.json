@@ -6,11 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "test:presence": "node --test scripts/test-presence.js"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.118.0",
     "@vitejs/plugin-react": "latest",
     "framer-motion": "latest",
     "lucide-react": "latest",

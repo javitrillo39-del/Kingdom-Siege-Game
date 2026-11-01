@@ -88,12 +88,12 @@ function relationshipLabel(status) {
   return "Add Friend";
 }
 
-function getPresenceStatus(player, presence) {
-  const publicPlayerId = getPublicPlayerId(player);
+function getPresenceStatus(player) {
+  const online = player?.online === true;
   return {
-    online: Boolean(publicPlayerId && presence?.onlinePlayerIds?.has(publicPlayerId)),
-    available: presence?.available === true,
-    lastSeenAt: player.lastSeenAt,
+    online,
+    available: typeof player?.online === "boolean",
+    lastSeenAt: online ? undefined : player?.lastSeenAt,
   };
 }
 
@@ -412,7 +412,7 @@ export default function SocialPanel({ presence }) {
             isPending={social.selectedPlayer.friendshipStatus === "pending" || pendingNames.has(social.selectedPlayer.username.toLowerCase())}
             busy={social.busy}
             onCopy={copyPlayerId}
-            presenceStatus={getPresenceStatus(social.selectedPlayer, presence)}
+            presenceStatus={getPresenceStatus(social.selectedPlayer)}
             {...playerActions(playerReference(social.selectedPlayer))}
           />
         ) : (
@@ -442,7 +442,7 @@ export default function SocialPanel({ presence }) {
               key={player.id}
               player={player}
               onView={() => void social.viewPlayer(player.id)}
-              presenceStatus={getPresenceStatus(player, presence)}
+              presenceStatus={getPresenceStatus(player)}
               secondaryAction={() => void social.removeFriend(player.id)}
               secondaryLabel={<><UserMinus size={14} /> Remove</>}
             />
@@ -536,7 +536,7 @@ export default function SocialPanel({ presence }) {
               player={player}
               showProfile={false}
               onView={() => void social.viewPlayer(player.id)}
-              presenceStatus={getPresenceStatus(player, presence)}
+              presenceStatus={getPresenceStatus(player)}
               action={() => void social.unblockPlayer(player.id)}
               actionLabel="Unblock"
               actionIcon={ShieldOff}
@@ -647,7 +647,7 @@ export default function SocialPanel({ presence }) {
               isPending={social.selectedPlayer.friendshipStatus === "pending" || pendingNames.has(social.selectedPlayer.username.toLowerCase())}
               busy={social.busy}
               onCopy={copyPlayerId}
-              presenceStatus={getPresenceStatus(social.selectedPlayer, presence)}
+              presenceStatus={getPresenceStatus(social.selectedPlayer)}
               {...playerActions(playerReference(social.selectedPlayer))}
             />
           </div>
@@ -677,7 +677,7 @@ function RequestList({ title, eyebrow, items, onView, presence, renderActions })
                 <small>@{request.username} · {request.realm}</small>
               </span>
             </button>
-            <Status {...getPresenceStatus(request, presence)} />
+            <Status {...getPresenceStatus(request)} />
             <div className="socialCardActions">{renderActions(request)}</div>
           </article>
         ))}
@@ -727,7 +727,7 @@ function SocialAside({ social, incomingCount, onChangeTab, onCopy, presence }) {
             (request) => request.direction === "outgoing" && request.username === social.selectedPlayer.username,
           )}
           busy={social.busy}
-          presenceStatus={getPresenceStatus(social.selectedPlayer, presence)}
+          presenceStatus={getPresenceStatus(social.selectedPlayer)}
           onAdd={() => void social.sendRequest(playerReference(social.selectedPlayer))}
           onRemove={() => void social.removeFriend(playerReference(social.selectedPlayer))}
           onBlock={() => void social.blockPlayer(playerReference(social.selectedPlayer))}

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Login from "./components/Login.jsx";
 import GamePage from "./pages/GamePage.jsx";
 import { call } from "./services/api.js";
-import { endPresenceSession } from "./services/presenceApi.js";
+import { logoutPresence } from "./services/presenceApi.js";
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -63,7 +63,7 @@ export default function App() {
   async function logout() {
     let logoutError = "";
     try {
-      await endPresenceSession();
+      await logoutPresence();
     } catch (error) {
       logoutError = error.message || "Could not update the last-seen status.";
     } finally {

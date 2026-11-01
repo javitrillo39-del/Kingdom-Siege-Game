@@ -11,13 +11,6 @@ import GameNavigation from "../components/GameNavigation.jsx";
 import MapPanel from "../components/MapPanel.jsx";
 import SocialPanel from "../components/SocialPanel.jsx";
 
-const presenceSections = {
-  city: "City",
-  army: "Army",
-  map: "Map",
-  social: "Social",
-};
-
 export default function GamePage({ initial, user, onLogout }) {
   const [game, setGame] = useState(initial);
   const [panel, setPanel] = useState("city");
@@ -27,7 +20,7 @@ export default function GamePage({ initial, user, onLogout }) {
   const busyRef = useRef(false);
   const toastTimerRef = useRef(null);
   const { rates, recordCollection, resetBaseline } = useProductionRates(initial);
-  const presence = usePresence({ userId: user.id, activeSection: presenceSections[panel] });
+  const presence = usePresence({ userId: user.id });
 
   const power = useMemo(
     () => game.troops * 5 + game.castle * 20 + game.barracks * 8,

@@ -1,19 +1,15 @@
 import { call } from "./api.js";
 
-export function startPresenceSession(activeSection) {
-  return call("/presence/session", {
+export function sendPresenceHeartbeat() {
+  return call("/presence/heartbeat", {
     method: "POST",
-    body: JSON.stringify({ activeSection }),
   });
 }
 
-export function updatePresenceSection(activeSection) {
-  return call("/presence/session", {
-    method: "PATCH",
-    body: JSON.stringify({ activeSection }),
-  });
+export function getOnlineCount() {
+  return call("/presence/online-count");
 }
 
-export function endPresenceSession() {
-  return call("/presence/session", { method: "DELETE" });
+export function logoutPresence() {
+  return call("/presence/logout", { method: "POST" });
 }
