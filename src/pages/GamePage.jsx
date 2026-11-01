@@ -8,6 +8,7 @@ import CommanderPanel from "../components/CommanderPanel.jsx";
 import GameHeader from "../components/GameHeader.jsx";
 import GameNavigation from "../components/GameNavigation.jsx";
 import MapPanel from "../components/MapPanel.jsx";
+import SocialPanel from "../components/SocialPanel.jsx";
 
 export default function GamePage({ initial, user, onLogout }) {
   const [game, setGame] = useState(initial);
@@ -142,6 +143,7 @@ export default function GamePage({ initial, user, onLogout }) {
               onAttack={(enemyId) => action("/game/attack", { enemyId })}
             />
           )}
+          {panel === "social" && <SocialPanel />}
         </section>
         <CommanderPanel
           user={user}

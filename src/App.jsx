@@ -16,13 +16,18 @@ export default function App() {
 
     call("/game")
       .then((data) => {
+        if (!data?.game) {
+          throw new Error("The saved game session is unavailable. Please sign in again.");
+        }
         if (active) {
           setSession({ game: data.game, user: { username: "Commander" } });
         }
       })
       .catch((error) => {
-        localStorage.removeItem("ks_token");
-        if (active) setLoadError(error.message);
+        if (active) {
+          localStorage.removeItem("ks_token");
+          setLoadError(error.message);
+        }
       })
       .finally(() => {
         if (active) setLoading(false);

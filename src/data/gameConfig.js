@@ -1,4 +1,4 @@
-import { Castle, Map, Shield, Trees, Wheat } from "lucide-react";
+import { Castle, Map, Shield, Trees, UsersRound, Wheat } from "lucide-react";
 
 export const enemies = [
   { id: "goblin", name: "Goblin Camp", power: 30, reward: 70 },
@@ -44,10 +44,12 @@ export const navigation = [
   { id: "city", label: "City", Icon: Castle },
   { id: "army", label: "Army", Icon: Shield },
   { id: "map", label: "Map", Icon: Map },
+  { id: "social", label: "Social", Icon: UsersRound },
 ];
 
 export const sectionTitles = {
   city: "Kingdom Development",
   army: "Royal Army",
   map: "Battle Map",
+  social: "Social Network",
 };
