@@ -11,6 +11,7 @@ export default function LanguageSelector({ compact = false }) {
       <select
         aria-label={t("common.language")}
         value={language}
+        dir={language === "ar" ? "rtl" : "ltr"}
         onChange={(event) => changeAppLanguage(event.target.value)}
       >
         {languageOptions.map((option) => (

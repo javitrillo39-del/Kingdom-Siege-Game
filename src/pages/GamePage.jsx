@@ -7,6 +7,7 @@ import { formatNumber } from "../i18n/index.js";
 import useProductionRates from "../hooks/useProductionRates.js";
 import usePresence from "../hooks/usePresence.js";
 import ArmyPanel from "../components/ArmyPanel.jsx";
+import AssistantPanel from "../components/AssistantPanel.jsx";
 import ChatPanel from "../components/ChatPanel.jsx";
 import CityPanel from "../components/CityPanel.jsx";
 import CommanderPanel from "../components/CommanderPanel.jsx";
@@ -161,6 +162,9 @@ export default function GamePage({ initial, user, onLogout, onSessionExpired }) 
           {panel === "social" && <SocialPanel presence={presence} />}
           {panel === "chat" && (
             <ChatPanel username={user.username} onSessionExpired={onSessionExpired} />
+          )}
+          {panel === "assistant" && (
+            <AssistantPanel activeSection={panel} username={user.username} />
           )}
         </section>
         <CommanderPanel

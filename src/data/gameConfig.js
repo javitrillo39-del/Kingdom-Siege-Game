@@ -1,4 +1,4 @@
-import { Castle, Map, MessageCircle, Shield, Trees, UsersRound, Wheat } from "lucide-react";
+import { Castle, Map, MessageCircle, Shield, Sparkles, Trees, UsersRound, Wheat } from "lucide-react";
 
 export const enemies = [
   { id: "goblin", name: "map.goblinCamp", power: 30, reward: 70 },
@@ -46,6 +46,7 @@ export const navigation = [
   { id: "map", label: "navigation.map", Icon: Map },
   { id: "social", label: "navigation.social", Icon: UsersRound },
   { id: "chat", label: "navigation.chat", Icon: MessageCircle },
+  { id: "assistant", label: "navigation.assistant", Icon: Sparkles },
 ];
 
 export const sectionTitles = {
@@ -54,4 +55,5 @@ export const sectionTitles = {
   map: "sections.map",
   social: "sections.social",
   chat: "sections.chat",
+  assistant: "sections.assistant",
 };

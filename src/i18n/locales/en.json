@@ -68,7 +68,8 @@
     "map": "Battle Map",
     "social": "Social Network",
     "chat": "Kingdom Chat",
-    "commander": "Commander: {{username}}"
+    "commander": "Commander: {{username}}",
+    "assistant": "Kingdom Assistant"
   },
   "header": {
     "realmNumber": "REALM {{realm}}",
@@ -85,7 +86,8 @@
     "social": "Social",
     "chat": "Chat",
     "exit": "Exit",
-    "sections": "Kingdom sections"
+    "sections": "Kingdom sections",
+    "assistant": "Assistant"
   },
   "commander": {
     "vanguard": "ROYAL VANGUARD",
@@ -332,5 +334,73 @@
     "profileLoad": "Could not load this profile.",
     "socialAction": "Social action failed.",
     "pageLoad": "Could not load this page."
+  },
+  "assistant": {
+    "eyebrow": "FREE KINGDOM GUIDE",
+    "title": "Kingdom Assistant",
+    "name": "Kingdom Assistant",
+    "intro": "Welcome, {{username}}. Ask about the kingdom or prepare a report.",
+    "modes": "Assistant modes",
+    "help": "Game help",
+    "reportBug": "Report a problem",
+    "suggest": "Send a suggestion",
+    "tryAsking": "TRY ASKING",
+    "clear": "Clear conversation",
+    "conversation": "Assistant conversation",
+    "askLabel": "Ask about Kingdom Siege",
+    "placeholder": "How can I add a friend?",
+    "send": "Send question",
+    "freeNotice": "Runs locally in the game. No AI credits or external keys are used.",
+    "welcome": "Welcome, Commander. I can explain City, Army, Map, Social, Chat, resources and common errors.",
+    "suggestions": {
+      "gold": "How do I get more gold?",
+      "food": "How do I get more food?",
+      "wood": "How do I get more wood?",
+      "troops": "How do I train troops?",
+      "walls": "How do I repair the walls?",
+      "playerId": "Where is my Player ID?",
+      "friends": "How do I add a friend?",
+      "chat": "How do the chat channels work?",
+      "online": "What does Online now mean?",
+      "battle": "How do battles work?",
+      "language": "How do I change language?",
+      "connection": "What should I do after a connection error?",
+      "greeting": "Hello",
+      "thanks": "Thank you",
+      "goodbye": "Goodbye",
+      "okay": "Okay"
+    },
+    "answers": {
+      "gold": "Upgrade the Castle to increase gold production. Gold is also earned from victorious battles. The server validates every reward and upgrade.",
+      "food": "Upgrade the Farm to increase food production. Food is required to train troops.",
+      "wood": "Upgrade the Lumber Mill to increase wood production. Wood is used for buildings and wall repairs.",
+      "troops": "Open Army and choose Train 5. Training costs 50 food and 20 gold. Your combat power increases with troops and building levels.",
+      "walls": "Open Army and choose Repair walls. A repair costs 40 wood and restores wall integrity.",
+      "playerId": "Open Social. Your public Player ID appears in My Profile. Use Copy to share it safely with another player.",
+      "friends": "Open Social, search by username or Player ID, select the profile and choose Add Friend. The other player accepts it under Requests.",
+      "chat": "Global Chat is shared by authenticated players. Realm Chat is limited to your realm. Private Chat is available between friends and respects blocks and mutes.",
+      "online": "Online now counts unique active accounts. Multiple tabs from the same account should count once. A closed tab may take a short time to disappear.",
+      "battle": "Open Map, compare your power with the enemy power, then launch an attack. The API validates losses and rewards.",
+      "language": "Use the language selector. The game supports English, Spanish for Spain and Spanish for Mexico, and remembers your selection.",
+      "connection": "Reload once and verify your internet connection. If the problem continues, note the section, visible error and browser, then use Report a problem. Never share passwords or tokens.",
+      "fallback": "I do not have a matching guide yet. Try asking about gold, food, wood, troops, walls, battles, Player ID, friends, online status, chat, language or connection errors.",
+      "greeting": "Hello! I am the Kingdom Assistant. I can help you with the city, resources, army, battles, friends, online players and chat channels.",
+      "thanks": "You are welcome! If you need anything else about Kingdom Siege, feel free to ask.",
+      "goodbye": "See you soon! Your kingdom will be waiting for you when you return.",
+      "okay": "Perfect. You can ask me anything about Kingdom Siege whenever you are ready."
+    },
+    "report": {
+      "bugTitle": "Prepare a problem report",
+      "ideaTitle": "Prepare a suggestion",
+      "bugIntro": "Describe what happened without including passwords, tokens or private information.",
+      "ideaIntro": "Describe the improvement you would like to see in Kingdom Siege.",
+      "section": "Game section",
+      "details": "Details",
+      "detailsPlaceholder": "What happened, what were you doing, and what message appeared?",
+      "prepare": "Prepare report",
+      "localOnly": "This free version prepares the text locally. It does not submit it automatically.",
+      "bugPrepared": "Problem report for {{section}}: {{details}}",
+      "ideaPrepared": "Suggestion for {{section}}: {{details}}"
+    }
   }
 }

@@ -68,7 +68,8 @@
     "map": "Mapa de batalla",
     "social": "Comunidad",
     "chat": "Chat del reino",
-    "commander": "Comandante: {{username}}"
+    "commander": "Comandante: {{username}}",
+    "assistant": "Asistente del reino"
   },
   "header": {
     "realmNumber": "REINO {{realm}}",
@@ -85,7 +86,8 @@
     "social": "Social",
     "chat": "Chat",
     "exit": "Salir",
-    "sections": "Secciones del reino"
+    "sections": "Secciones del reino",
+    "assistant": "Asistente"
   },
   "commander": {
     "vanguard": "VANGUARDIA REAL",
@@ -332,5 +334,73 @@
     "profileLoad": "No se pudo cargar este perfil.",
     "socialAction": "No se pudo completar la acción social.",
     "pageLoad": "No se pudo cargar esta página."
+  },
+  "assistant": {
+    "eyebrow": "GUÍA GRATUITA DEL REINO",
+    "title": "Asistente del reino",
+    "name": "Asistente del reino",
+    "intro": "Bienvenido, {{username}}. Pregunta sobre el reino o prepara un reporte.",
+    "modes": "Modos del asistente",
+    "help": "Ayuda del juego",
+    "reportBug": "Reportar un problema",
+    "suggest": "Enviar una sugerencia",
+    "tryAsking": "PRUEBA PREGUNTANDO",
+    "clear": "Borrar conversación",
+    "conversation": "Conversación con el asistente",
+    "askLabel": "Pregunta sobre Kingdom Siege",
+    "placeholder": "¿Cómo puedo agregar un amigo?",
+    "send": "Enviar pregunta",
+    "freeNotice": "Funciona localmente dentro del juego. No utiliza créditos de IA ni claves externas.",
+    "welcome": "Bienvenido, comandante. Puedo explicar Ciudad, Ejército, Mapa, Social, Chat, recursos y errores comunes.",
+    "suggestions": {
+      "gold": "¿Cómo consigo más oro?",
+      "food": "¿Cómo consigo más comida?",
+      "wood": "¿Cómo consigo más madera?",
+      "troops": "¿Cómo entreno tropas?",
+      "walls": "¿Cómo reparo las murallas?",
+      "playerId": "¿Dónde está mi ID de jugador?",
+      "friends": "¿Cómo agrego un amigo?",
+      "chat": "¿Cómo funcionan los canales de chat?",
+      "online": "¿Qué significa En línea ahora?",
+      "battle": "¿Cómo funcionan las batallas?",
+      "language": "¿Cómo cambio el idioma?",
+      "connection": "¿Qué hago si aparece un error de conexión?",
+      "greeting": "Hola",
+      "thanks": "Gracias",
+      "goodbye": "Adiós",
+      "okay": "Está bien"
+    },
+    "answers": {
+      "gold": "Mejora el Castillo para aumentar la producción de oro. También obtienes oro al ganar batallas. El servidor valida cada recompensa y mejora.",
+      "food": "Mejora la Granja para aumentar la producción de comida. La comida es necesaria para entrenar tropas.",
+      "wood": "Mejora el Aserradero para aumentar la producción de madera. La madera se usa para edificios y reparaciones.",
+      "troops": "Abre Ejército y selecciona Entrenar 5. Cuesta 50 de comida y 20 de oro. El poder aumenta con las tropas y los edificios.",
+      "walls": "Abre Ejército y selecciona Reparar murallas. Cuesta 40 de madera y restaura su integridad.",
+      "playerId": "Abre Social. Tu ID público aparece en Mi perfil. Pulsa Copiar para compartirlo de forma segura.",
+      "friends": "Abre Social, busca por nombre o ID, abre el perfil y pulsa Agregar amigo. La otra persona debe aceptar en Solicitudes.",
+      "chat": "El chat global es para jugadores autenticados. El chat del reino es exclusivo de tu reino. El privado está disponible entre amigos y respeta bloqueos y silencios.",
+      "online": "En línea ahora cuenta cuentas activas únicas. Varias pestañas de la misma cuenta deben contar una sola vez. Una pestaña cerrada puede tardar un poco en desaparecer.",
+      "battle": "Abre Mapa, compara tu poder con el del enemigo y lanza el ataque. La API valida pérdidas y recompensas.",
+      "language": "Usa el selector de idioma. El juego admite inglés, español de España y español de México, y recuerda tu elección.",
+      "connection": "Recarga una vez y revisa tu conexión. Si continúa, anota la sección, el error visible y el navegador, y usa Reportar un problema. Nunca compartas contraseñas ni tokens.",
+      "fallback": "Todavía no tengo una guía que coincida. Pregunta por oro, comida, madera, tropas, murallas, batallas, ID de jugador, amigos, estado en línea, chat, idioma o errores de conexión.",
+      "greeting": "¡Hola! Soy el Asistente del reino. Puedo ayudarte con la ciudad, los recursos, el ejército, las batallas, los amigos, los jugadores en línea y los canales de chat.",
+      "thanks": "¡De nada! Si necesitas algo más sobre Kingdom Siege, puedes preguntarme.",
+      "goodbye": "¡Nos vemos pronto! Tu reino te estará esperando cuando regreses.",
+      "okay": "Perfecto. Cuando quieras, puedes preguntarme cualquier cosa sobre Kingdom Siege."
+    },
+    "report": {
+      "bugTitle": "Preparar un reporte de problema",
+      "ideaTitle": "Preparar una sugerencia",
+      "bugIntro": "Describe lo ocurrido sin incluir contraseñas, tokens ni información privada.",
+      "ideaIntro": "Describe la mejora que te gustaría ver en Kingdom Siege.",
+      "section": "Sección del juego",
+      "details": "Detalles",
+      "detailsPlaceholder": "¿Qué ocurrió, qué estabas haciendo y qué mensaje apareció?",
+      "prepare": "Preparar reporte",
+      "localOnly": "Esta versión gratuita prepara el texto localmente. No lo envía automáticamente.",
+      "bugPrepared": "Reporte de problema en {{section}}: {{details}}",
+      "ideaPrepared": "Sugerencia para {{section}}: {{details}}"
+    }
   }
 }
